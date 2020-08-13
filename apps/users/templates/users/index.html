@@ -1,51 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>{% block title %}qUP{% endblock %}</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-        {% block script %}
-        {% endblock %}
-        <style>
-            body {
-               margin: 0;
-               padding: 0;
-               overflow: hidden;
-            }
+{% extends 'users/layout.html' %}
 
-            .background-img {
-                background-image: url(https://www.acclimation.com/au/wp-content/uploads/2015/09/Modern-Background-02.jpg);
-                background-size: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                width: 100%;
-                height: 100%;
-                position: absolute;
-            }
-        </style>
-    </head>
-    <body>
-        <!--
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">qUP</a>
-
-            <div>
-              <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    Login
-                </li>
-              </ul>
+{% block content %}
+    <div class="container">
+        <div class="row" style="margin-top: 9em">
+            <div class="col"></div>
+            <div class="col-6">
+                <div class="card" style="height: 18rem">
+                    <div class="card-body" style="text-align: center; margin-top: 3em;">
+                        <h2 class="card-title">Welcome to qUP!</h2>
+                        <p style="font-size: 20px">All your office hours in one place!</p>
+                        <a href="{% url 'users:login' %}" class="btn btn-lg btn-robin-egg-blue">Log In</a>&nbsp;
+                        <a href="{% url 'users:register' %}" class="btn btn-lg btn-robin-egg-blue">Sign Up</a>
+                    </div>
+                </div>
             </div>
-          </nav>
-        -->
-
-        <div class="background-img">
-            <div class="body" style="margin-left: 1em; margin-top: 1em;">
-                {% block body %}
-                {% endblock %}
-            </div>
+            <div class="col"></div>
         </div>
-
-
-    </body>
-</html>
+    </div>
+{% endblock %}

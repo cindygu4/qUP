@@ -1,0 +1,27 @@
+body {
+   margin: 0;
+   padding: 0;
+   overflow: hidden;
+}
+
+.background-img {
+    background-image: url(https://www.acclimation.com/au/wp-content/uploads/2015/09/Modern-Background-02.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: scroll;
+}
+
+.btn-robin-egg-blue {
+    background-color: #00CECB;
+    color: white;
+}
+
+.btn-robin-egg-blue:hover, .btn-robin-egg-blue:focus,
+.btn-robin-egg-blue:active {
+    background-color: #00B8B5;
+    color: white;
+}
