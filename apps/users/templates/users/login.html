@@ -1,5 +1,4 @@
 {% extends 'users/layout.html' %}
-{% load static %}
 
 {% block content %}
     <div class="container">
@@ -22,10 +21,9 @@
                         <form action="{% url 'users:login' %}" method="post">
                             {% csrf_token %}
                             {{ form|crispy }}
-                            <button type="submit" class="btn btn-block btn-lg btn-robin-egg-blue" style="margin-top: 2em; margin-bottom: 1em;">
-                                Log In
-                            </button>
+                            <input type="submit" class="btn btn-block btn-lg btn-robin-egg-blue" value="Log In" style="margin-top: 2em; margin-bottom: 1em;">
                         </form>
+                        Don't have an account? <a href="{% url 'users:register' %}">Register here.</a>
                     </div>
                 </div>
             </div>

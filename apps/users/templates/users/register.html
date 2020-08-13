@@ -1,5 +1,4 @@
 {% extends 'users/layout.html' %}
-{% load static %}
 
 {% block content %}
     <div class="container">
@@ -37,10 +36,9 @@
                                     {{ form.password2|as_crispy_field }}
                                 </div>
                             </div>
-                        <button type="submit" class="btn btn-lg btn-block btn-robin-egg-blue" style="margin-top: 1em; margin-bottom: 1em;">
-                            Register
-                        </button>
+                        <input type="submit" class="btn btn-lg btn-block btn-robin-egg-blue" value="Register" style="margin-top: 1em; margin-bottom: 1em;">
                         </form>
+                        Already have an account? <a href="{% url 'users:login' %}">Log in here.</a>
                     </div>
                 </div>
             </div>

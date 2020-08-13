@@ -13,6 +13,9 @@ class RegistrationForm(UserCreationForm):
     email = forms.EmailField()
     user_type = forms.ChoiceField(choices=USER_CHOICES, label="I am a:")\
 
+    class Meta:
+        model = User
+        fields = ["first_name", "last_name", "username", "email", "user_type", "password1", "password2"]
 
     def save(self, commit=True):
         user = super(RegistrationForm, self).save(commit=False)
@@ -31,5 +34,5 @@ class RegistrationForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError('Email addresses must be unique.')
+            raise forms.ValidationError('Email address already taken. Try again.')
         return email

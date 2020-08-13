@@ -32,6 +32,10 @@ def login_view(request):
             else:
                 login(request, user)
                 # redirect student and teacher to right pages
+                if user.is_teacher:
+                    return redirect('teachers:index')
+                else:
+                    return redirect('students:index')
     else:
         form = AuthenticationForm()
     return render(request, "users/login.html", {
@@ -52,10 +56,10 @@ def register(request):
             if user.is_teacher:
                 Teacher.objects.create(user=user)
                 # redirect teacher to right place
+                return redirect('teachers:index')
             else:
                 Student.objects.create(user=user)
-        else:
-            return render(request, "users/register.html", {'form': form})
+                return redirect('students:index')
     else:
         form = RegistrationForm()
     return render(request, "users/register.html", {
