@@ -1,0 +1,12 @@
+{% extends 'teachers/layout.html' %}
+
+{% block content %}
+    <div class="container" style="margin-top: 2em;">
+        {% load crispy_forms_tags %}
+        <form action="{% url 'teachers:add_class' %}" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" class="btn btn-middle-blue">
+        </form>
+    </div>
+{% endblock %}

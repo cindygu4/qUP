@@ -5,3 +5,14 @@ body {
 nav {
     background-color: #92DCE5;
 }
+
+.btn-middle-blue {
+    background-color: #92DCE5;
+    color: black;
+}
+
+.btn-middle-blue:hover, .btn-middle-blue:focus,
+.btn-middle-blue:active {
+    background-color: #ADE4EB;
+    color: black;
+}

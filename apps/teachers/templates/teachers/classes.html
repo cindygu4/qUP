@@ -1,0 +1,39 @@
+{% extends 'teachers/layout.html' %}
+
+{% block content %}
+    <div class="container text-center" style="margin-top: 1em;">
+        <h1>My Classes</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-3 col-md-2">
+            <a class="btn btn-middle-blue" href="{% url 'teachers:add_class' %}">
+                <span class="fa fa-plus"></span> Class
+            </a>
+        </div>
+        <div class="col"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div class="card-deck" style="margin-top: 1em;">
+                {% for class in classes %}
+                    <div class="row col-auto">
+                        <div class="card mb-4 mt-2" style="width: 582px;">
+                            <div class="row no-gutters">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ class.name }}</h5>
+                                    <br>
+                                    <p class="card-text">Number of Students: {{ class.students.count }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
+{% endblock %}
