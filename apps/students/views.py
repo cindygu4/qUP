@@ -1,5 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
+from .forms import JoinClassForm
+from apps.teachers.models import Classroom, Queue
+from apps.users.models import Teacher, Student
+from django.contrib import messages
 
 # Create your views here.
 def is_student(user):
@@ -9,3 +13,29 @@ def is_student(user):
 @user_passes_test(is_student)
 def index(request):
     return render(request, "students/index.html")
+
+@login_required
+@user_passes_test(is_student)
+def join_class(request):
+    if request.method == 'POST':
+        form = JoinClassForm(request.POST)
+        if form.is_valid():
+            class_code = form.class_code['class_code']
+            if Classroom.objects.filter(code=class_code).exists():
+                classroom = Classroom.objects.get(code=class_code)
+                student = Student.objects.get(user=request.user)
+                student.classrooms.add(classroom)
+                return redirect('students:view_classes')
+            else:
+                messages.error(request, "No classrooms match this code. Try again.")
+    else:
+        form = JoinClassForm()
+
+    return render(request, "students/join_class.html", {
+        'form': form
+    })
+
+@login_required
+@user_passes_test(is_student)
+def view_classes(request):
+    return render(request, "students/classes.html")

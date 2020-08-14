@@ -6,6 +6,7 @@ class Classroom(models.Model):
     name = models.CharField(max_length=64)
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='classrooms')
     students = models.ManyToManyField(Student, related_name='classrooms')
+    code = models.CharField(max_length=7, blank=False, unique=True)
 
 class Queue(models.Model):
     name = models.CharField(max_length=64)

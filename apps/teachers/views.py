@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Classroom, Queue
 from apps.users.models import Teacher
 from .forms import NewClassroomForm
+from django.utils.crypto import get_random_string
 
 # Create your views here.
 def is_teacher(user):
@@ -29,7 +30,8 @@ def add_class(request):
         form = NewClassroomForm(request.POST)
         if form.is_valid():
             class_name = form.cleaned_data['name']
-            Classroom.objects.create(name=class_name, teacher=request.user.teacher_profile)
+            class_code = get_random_string(length=7)
+            Classroom.objects.create(name=class_name, teacher=request.user.teacher_profile, code=class_code)
             return redirect('teachers:view_classes')
     else:
         form = NewClassroomForm()
