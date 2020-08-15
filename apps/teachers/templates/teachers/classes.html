@@ -24,7 +24,9 @@
                         <div class="card mb-4 mt-2" style="width: 100%;">
                             <div class="row no-gutters">
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ class.name }}</h5>
+                                    <h5 class="card-title">
+                                        <a href="{% url 'teachers:view_class' class.id %}">{{ class.name }}</a>
+                                    </h5>
                                     <br>
                                     <p class="card-text">Class Code: {{ class.code }}</p>
                                     <p class="card-text">Number of Students: {{ class.students.count }}</p>

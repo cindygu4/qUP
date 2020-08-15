@@ -11,8 +11,6 @@ class Classroom(models.Model):
 class Queue(models.Model):
     name = models.CharField(max_length=64)
     classroom = models.ForeignKey(Classroom, on_delete=models.CASCADE, related_name='queues')
-    start_date = models.DateField(blank=False)
-    end_date = models.DateField(blank=False)
-    frequency = models.CharField(max_length=7, blank=False)
+    date = models.DateField(blank=False)
     start_time = models.TimeField(blank=False)
     end_time = models.TimeField(blank=False)

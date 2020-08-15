@@ -1,0 +1,13 @@
+{% extends 'teachers/layout.html' %}
+
+{% block content %}
+    <div class="container text-center" style="margin-top: 1em;">
+        <h1>{{ classroom.name }}</h1>
+    </div>
+
+    <div class="container">
+        <a class="btn btn-middle-blue" href="{% url 'teachers:add_queue' classroom.id %}">
+            <span class="fa fa-plus"></span> Office Hours
+        </a>
+    </div>
+{% endblock %}
