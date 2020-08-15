@@ -2,7 +2,32 @@
 {% load static %}
 
 {% block content %}
-    <h1>Upcoming Office Hours</h1>
+    <div class="container text-center" style="margin-top: 1em;">
+        <h1>Upcoming Office Hours</h1>
+    </div>
+
+    <div style="margin-top: 2em;">
+        {% for queue in queues %}
+            <div class="row">
+                <div class="col"></div>
+                <div class="col-10 col-md-6">
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <h5>{{ queue.classroom.name }} - {{ queue.name }}</h5>
+                            </div>
+                            <div class="card-text">{{ queue.date }}</div>
+                            <div class="card-text">Starts: {{ queue.start_time }}</div>
+                            <div class="card-text">Ends: {{ queue.end_time }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        {% endfor %}
+
+    </div>
+
 {% endblock %}
 
 {% block script %}

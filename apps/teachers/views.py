@@ -42,12 +42,17 @@ def add_class(request):
 
 def view_class(request, class_id):
     classroom = Classroom.objects.get(pk=class_id)
+    queues = Queue.objects.filter(classroom=classroom)
     return render(request, "teachers/classroom.html", {
-        'classroom': classroom
+        'classroom': classroom, 'queues': queues
     })
 
 def upcoming_oh(request):
-    return render(request, "teachers/upcoming_ohs.html")
+    # order the teacher's queues by date then start time
+    queues = Queue.objects.filter(classroom__teacher=request.user.teacher_profile).order_by('date', 'start_time')
+    return render(request, "teachers/upcoming_ohs.html", {
+        'queues': queues
+    })
 
 def add_queue(request, class_id):
     classroom = Classroom.objects.get(pk=class_id)
@@ -59,7 +64,7 @@ def add_queue(request, class_id):
             start_time = form.cleaned_data['start_time']
             end_time = form.cleaned_data['end_time']
 
-            # if end date is before start date, show a message
+            # if end time is before start time, show a message
             if end_time <= start_time:
                 messages.error(request, 'End Time should be later than Start Time.')
                 return render(request, "teachers/add_queue.html", {
