@@ -1,5 +1,18 @@
 {% extends 'students/layout.html' %}
 
 {% block content %}
-    <h1>My Classes</h1>
+    <div class="container text-center" style="margin-top: 1em;">
+        <h1>My Classes</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-4 col-md-2">
+            <a class="btn btn-middle-blue" href="{% url 'students:join_class' %}">
+                <span class="fa fa-plus"></span> Class
+            </a>
+        </div>
+        <div class="col"></div>
+    </div>
+
 {% endblock %}

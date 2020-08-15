@@ -20,7 +20,7 @@ def join_class(request):
     if request.method == 'POST':
         form = JoinClassForm(request.POST)
         if form.is_valid():
-            class_code = form.class_code['class_code']
+            class_code = form.cleaned_data['class_code']
             if Classroom.objects.filter(code=class_code).exists():
                 classroom = Classroom.objects.get(code=class_code)
                 student = Student.objects.get(user=request.user)

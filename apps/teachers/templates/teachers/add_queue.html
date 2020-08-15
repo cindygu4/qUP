@@ -4,8 +4,17 @@
     <div class="container text-center" style="margin-top: 1em;">
         <h1>New Office Hours for "{{ classroom.name }}"</h1>
     </div>
+
     {% load crispy_forms_tags %}
     <div class="container" style="margin-top: 3em;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger col-12" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         <form action="{% url 'teachers:add_queue' classroom.id %}" method="post">
             {% csrf_token %}
             <div class="form-row">

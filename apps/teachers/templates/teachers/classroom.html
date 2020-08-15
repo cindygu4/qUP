@@ -5,10 +5,14 @@
         <h1>{{ classroom.name }}</h1>
     </div>
 
-    <div class="container">
-        <a class="btn btn-middle-blue" href="{% url 'teachers:add_queue' classroom.id %}">
-            <span class="fa fa-plus"></span> Office Hours
-        </a>
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-4 col-md-3">
+            <a class="btn btn-middle-blue" href="{% url 'teachers:add_queue' classroom.id %}">
+                <span class="fa fa-plus"></span> Office Hours
+            </a>
+        </div>
+        <div class="col"></div>
     </div>
 
     <div class="row">
