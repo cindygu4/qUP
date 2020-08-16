@@ -38,4 +38,7 @@ def join_class(request):
 @login_required
 @user_passes_test(is_student)
 def view_classes(request):
-    return render(request, "students/classes.html")
+    classrooms = Classroom.objects.filter(students__user=request.user)
+    return render(request, "students/classes.html", {
+        'classrooms': classrooms
+    })

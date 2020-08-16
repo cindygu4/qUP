@@ -22,9 +22,13 @@ class NewClassroomForm(forms.Form):
 
 class NewQueueForm(forms.Form):
     name = forms.CharField(max_length=64, label="Office Hours Name")
-    date = forms.DateField(validators=[validate_date], label="Start Date",
-                                 widget=forms.widgets.DateInput(attrs={'type': 'date', 'placeholder': 'mm/dd/yyyy'}))
+    date = forms.DateField(validators=[validate_date], label="Date",
+                           widget=forms.widgets.DateInput(attrs={'type': 'date', 'placeholder': 'mm/dd/yyyy'}))
     start_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time', 'placeholder': 'hh:mm --'}),
                                  label="Start Time (Please specify AM or PM.)")
     end_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time', 'placeholder': 'hh:mm --'}),
                                label="End Time (Please specify AM or PM.)")
+    location = forms.CharField(max_length=100)
+    description = forms.CharField(required=False, max_length=280, label="Additional Information",
+                                  widget=forms.Textarea(attrs={
+                                      'placeholder': 'Add optional description or any other information here'}))

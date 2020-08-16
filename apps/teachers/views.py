@@ -63,6 +63,8 @@ def add_queue(request, class_id):
             date = form.cleaned_data['date']
             start_time = form.cleaned_data['start_time']
             end_time = form.cleaned_data['end_time']
+            location = form.cleaned_data['location']
+            description = form.cleaned_data['description']
 
             # if end time is before start time, show a message
             if end_time <= start_time:
@@ -72,7 +74,7 @@ def add_queue(request, class_id):
                 })
             else:
                 Queue.objects.create(name=queue_name, classroom=classroom, date=date, start_time=start_time,
-                                     end_time=end_time)
+                                     end_time=end_time, location=location, description=description)
                 return redirect('teachers:view_class', classroom.id)
     else:
         form = NewQueueForm()

@@ -14,3 +14,5 @@ class Queue(models.Model):
     date = models.DateField(blank=False)
     start_time = models.TimeField(blank=False)
     end_time = models.TimeField(blank=False)
+    location = models.CharField(max_length=100, blank=False, null=True)
+    description = models.TextField(blank=True, null=True)

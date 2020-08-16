@@ -15,4 +15,30 @@
         <div class="col"></div>
     </div>
 
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div class="card-deck" style="margin-top: 1em;">
+                {% for class in classrooms %}
+                    <div class="row col-md-6 col-12">
+                        <div class="card mb-4 mt-2" style="width: 100%;">
+                            <div class="row no-gutters">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        {{ class.name }}
+                                    </h5>
+                                    <br>
+                                    <p class="card-text">
+                                        Instructor: {{ class.teacher.user.last_name }}, {{ class.teacher.user.first_name }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-1"></div>
+    </div>
+
 {% endblock %}
