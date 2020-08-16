@@ -28,7 +28,8 @@ class NewQueueForm(forms.Form):
                                  label="Start Time (Please specify AM or PM.)")
     end_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time', 'placeholder': 'hh:mm --'}),
                                label="End Time (Please specify AM or PM.)")
-    location = forms.CharField(max_length=100)
+    location = forms.CharField(max_length=100, label="Location (If online office hours, please put Online.)")
+    meeting_url = forms.URLField(max_length=100, required=False, label="Meeting URL")
     description = forms.CharField(required=False, max_length=280, label="Additional Information",
                                   widget=forms.Textarea(attrs={
                                       'placeholder': 'Add optional description or any other information here'}))
