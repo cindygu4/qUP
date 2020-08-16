@@ -16,3 +16,26 @@ nav {
     background-color: #ADE4EB;
     color: black;
 }
+
+.btn-light-coral {
+    background-color: #FE6D73;
+    color: white;
+}
+
+.btn-light-coral:hover, .btn-light-coral:focus,
+.btn-light-coral:active {
+    background-color: #FE484E;
+    color: white;
+}
+
+.btn-light-sea-green {
+    background-color: #17C3B2;
+    color: white;
+}
+
+
+.btn-light-sea-green:hover, .btn-light-sea-green:focus,
+.btn-light-sea-green:active {
+    background-color: #13A496;
+    color: white;
+}

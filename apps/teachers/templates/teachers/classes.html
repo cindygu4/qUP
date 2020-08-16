@@ -1,4 +1,5 @@
 {% extends 'teachers/layout.html' %}
+{% load static %}
 
 {% block content %}
     <div class="container text-center" style="margin-top: 1em;">
@@ -25,9 +26,31 @@
                             <div class="card mb-4 mt-2" style="width: 100%;">
                                 <div class="row no-gutters">
                                     <div class="card-body">
-                                        <h5 class="card-title">
-                                            <a href="{% url 'teachers:view_class' class.id %}">{{ class.name }}</a>
-                                        </h5>
+                                        <div class="card-title">
+                                            <div class="row">
+                                                <div class="col-8 pt-1">
+                                                    <h5>
+                                                        <a href="{% url 'teachers:view_class' class.id %}" id="class-name-{{ class.id }}">
+                                                            {{ class.name }}
+                                                        </a>
+                                                    </h5>
+                                                    <div class="edit-class-name-{{ class.id }} edit-class-name-div">
+                                                        <form action="{% url 'teachers:rename_class' class.id %}" method="post">
+                                                            {% csrf_token %}
+                                                            <div class="form-group">
+                                                                <input id="class-name-input-{{ class.id }}" type="text" name="class-name" maxlength="64" class="form-control">
+                                                            </div>
+                                                            <input type="submit" class="btn btn-light-sea-green save-btn-{{ class.id }}">
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 col-md-5 col-4 text-right" id="div-for-edit-btn-{{ class.id }}">
+                                                    <button class="btn btn-light-coral edit-btn btn-block" id="{{ class.id }}">
+                                                        <span class="fa fa-edit"></span> Edit
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <br>
                                         <p class="card-text">Class Code: {{ class.code }}</p>
                                         <p class="card-text">Number of Students: {{ class.students.count }}</p>
@@ -45,4 +68,8 @@
         </div>
         <div class="col-1"></div>
     </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'teachers/classes.js' %}"></script>
 {% endblock %}

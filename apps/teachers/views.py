@@ -5,6 +5,8 @@ from apps.users.models import Teacher
 from .forms import NewClassroomForm, NewQueueForm
 from django.utils.crypto import get_random_string
 from django.contrib import messages
+from django.http import JsonResponse
+import json
 
 # Create your views here.
 def is_teacher(user):
@@ -81,3 +83,14 @@ def add_queue(request, class_id):
     return render(request, "teachers/add_queue.html", {
         'classroom': classroom, 'form': form
     })
+
+@login_required
+def edit_class_name(request, class_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    data = json.loads(request.body)
+    new_name = data.get("new_name", "")
+
+    Classroom.objects.filter(pk=class_id).update(name=new_name)
+    return JsonResponse({"message": "Class name edited successfully."}, status=201)
