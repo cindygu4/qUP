@@ -18,9 +18,9 @@
     <div class="row">
         <div class="col-1"></div>
         <div class="col-10">
-            {% if queues %}
+            {% if not empty_list %}
                 <div class="card-deck" style="margin-top: 1em;">
-                    {% for queue in queues %}
+                    {% for queue, available in queues %}
                         <div class="row col-md-6 col-12">
                             <div class="card mb-4 mt-2" style="width: 100%;">
                                 <div class="row no-gutters">
@@ -28,10 +28,42 @@
                                         <h5 class="card-title">
                                             {{ queue.name }}
                                         </h5>
-                                        <p class="card-text">
-                                            {{ queue.date }}<br>Starts {{ queue.start_time }}<br>Ends {{ queue.end_time }}
-                                            <br>Location: {{ queue.location }}
-                                        </p>
+                                        <div class="row mb-3" id="edit-open-btns">
+                                            <div class="col-5">
+                                                <button class="btn btn-light-coral edit-btn btn-block" id="{{ queue.id }}">
+                                                    <span class="fa fa-edit"></span> Edit
+                                                </button>
+                                            </div>
+                                            <div class="col-7">
+                                                {% if available and not queue.opened %}
+                                                    <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'teachers:open_queue' queue.id %}">
+                                                        Open Queue
+                                                    </a>
+                                                {% endif %}
+                                                {% if available and queue.opened %}
+                                                    <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'teachers:opened_queue' queue.id %}">
+                                                        Join Queue
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="card-text queue-info-{{ queue.id }}">
+                                            <div class="queue-date">
+                                                {{ queue.date }}
+                                            </div>
+                                            <div class="queue-start">
+                                                Starts {{ queue.start_time }}
+                                            </div>
+                                            <div class="queue-end">
+                                                Ends {{ queue.end_time }}
+                                            </div>
+                                            <div class="queue-location">
+                                                Location: {{ queue.location }}
+                                            </div>
+                                            <div class="queue-description">
+                                                Additional Info: {{ queue.description }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

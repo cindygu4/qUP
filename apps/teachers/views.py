@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Classroom, Queue
 from apps.users.models import Teacher
+from django.http import Http404
 from .forms import NewClassroomForm, NewQueueForm
 from django.utils.crypto import get_random_string
 from django.contrib import messages
 from django.http import JsonResponse
 import json
+from datetime import datetime
 
 # Create your views here.
 def is_teacher(user):
@@ -44,9 +46,22 @@ def add_class(request):
 
 def view_class(request, class_id):
     classroom = Classroom.objects.get(pk=class_id)
-    queues = Queue.objects.filter(classroom=classroom)
+    queues = Queue.objects.filter(classroom=classroom).order_by('date', 'start_time')
+    empty = True
+    if queues:
+        empty = False
+
+    open_list = []
+    for queue in queues:
+        if (queue.date == datetime.today().date()) and (queue.start_time <= datetime.today().time()):
+            open_list.append(True)
+        else:
+            open_list.append(False)
+
+    joined_list = zip(queues, open_list)
+
     return render(request, "teachers/classroom.html", {
-        'classroom': classroom, 'queues': queues
+        'classroom': classroom, 'queues': joined_list, 'empty_list': empty
     })
 
 def upcoming_oh(request):
@@ -84,6 +99,16 @@ def add_queue(request, class_id):
         'classroom': classroom, 'form': form
     })
 
+def open_queue(request, queue_id):
+    queue = Queue.objects.filter(pk=queue_id).update(opened=True)
+    return redirect('teachers:opened_queue', queue_id)
+
+def opened_queue(request, queue_id):
+    queue = Queue.objects.get(pk=queue_id)
+    return render(request, "teachers/opened_oh.html", {
+        'queue': queue
+    })
+
 @login_required
 def edit_class_name(request, class_id):
     if request.method != "POST":
@@ -94,3 +119,21 @@ def edit_class_name(request, class_id):
 
     Classroom.objects.filter(pk=class_id).update(name=new_name)
     return JsonResponse({"message": "Class name edited successfully."}, status=201)
+
+@login_required
+def edit_queue(request, queue_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    data = json.loads(request.body)
+
+    return JsonResponse({"message": "Queue edited successfully."}, status=201)
+
+@login_required
+def delete_queue(request, queue_id):
+    if Queue.objects.filter(pk=queue_id).exists():
+        Queue.objects.filter(pk=queue_id).delete()
+    else:
+        raise Http404("Queue does not exist")
+
+    return JsonResponse({"message": "Queue deleted successfully."}, status=201)

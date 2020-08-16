@@ -16,3 +16,4 @@ class Queue(models.Model):
     end_time = models.TimeField(blank=False)
     location = models.CharField(max_length=100, blank=False, null=True)
     description = models.TextField(blank=True, null=True)
+    opened = models.BooleanField(default=False)

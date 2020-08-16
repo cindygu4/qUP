@@ -24,7 +24,7 @@ nav {
 
 .btn-light-coral:hover, .btn-light-coral:focus,
 .btn-light-coral:active {
-    background-color: #FE484E;
+    background-color: #FD5D63;
     color: white;
 }
 
@@ -33,9 +33,19 @@ nav {
     color: white;
 }
 
-
 .btn-light-sea-green:hover, .btn-light-sea-green:focus,
 .btn-light-sea-green:active {
     background-color: #13A496;
+    color: white;
+}
+
+.btn-dark-pastel-green {
+    background-color: #00CC5F;
+    color: white;
+}
+
+.btn-dark-pastel-green:hover, .btn-dark-pastel-green:focus,
+.btn-dark-pastel-green:active {
+    background-color: #00B856;
     color: white;
 }
