@@ -19,7 +19,11 @@ def is_teacher(user):
 @login_required
 @user_passes_test(is_teacher)
 def index(request):
-    return render(request, "teachers/index.html")
+    teacher = request.user.teacher_profile
+    current_queues = Queue.objects.filter(classroom__teacher=teacher, currently_meeting=True)
+    return render(request, "teachers/index.html", {
+        'current_queues': current_queues
+    })
 
 
 '''def convert_to_localtime(utctime):

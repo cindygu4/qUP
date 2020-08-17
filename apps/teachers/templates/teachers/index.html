@@ -4,4 +4,42 @@
     <div class="container" style="margin-top: 1em;">
         <h1 style="text-align: center">Dashboard</h1>
     </div>
+
+    <div style="margin-top: 2em;">
+        {% for queue in current_queues %}
+            <div class="row">
+                <div class="col"></div>
+                <div class="col-10 col-md-6">
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <h5>{{ queue.classroom.name }} - {{ queue.name }}</h5>
+                            </div>
+                            <div class="card-text mb-3">
+                                {% if queue.currently_meeting and not queue.opened %}
+                                    <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'teachers:open_queue' queue.id %}">
+                                        Open Queue
+                                    </a>
+                                {% endif %}
+                                {% if queue.currently_meeting and queue.opened %}
+                                    <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'teachers:opened_queue' queue.id %}">
+                                        Join OH
+                                    </a>
+                                {% endif %}
+                            </div>
+                            <div class="card-text">{{ queue.date }}</div>
+                            <div class="card-text">Starts: {{ queue.start_time }}</div>
+                            <div class="card-text">Ends: {{ queue.end_time }}</div>
+                            {% if queue.has_url %}
+                                <div class="card-text">Meeting URL: <a>{{ queue.meeting_url }}</a></div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col"></div>
+            </div>
+        {% endfor %}
+
+    </div>
 {% endblock %}
