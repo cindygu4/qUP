@@ -2,19 +2,10 @@ from django import forms
 from django.core.exceptions import ValidationError
 from .models import Classroom, Queue
 import datetime
-
-DAY_CHOICES = (
-    ('1', 'Monday'),
-    ('2', 'Tuesday'),
-    ('3', 'Wednesday'),
-    ('4', 'Thursday'),
-    ('5', 'Friday'),
-    ('6', 'Saturday'),
-    ('7', 'Sunday')
-)
+from django.utils import timezone
 
 def validate_date(date):
-    if date < datetime.date.today():
+    if date < timezone.localtime(timezone.now()).date():
         raise ValidationError(u'Date must be today or later')
 
 class NewClassroomForm(forms.Form):

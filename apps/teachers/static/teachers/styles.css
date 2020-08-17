@@ -65,3 +65,9 @@ nav {
     max-height: 360px;
     overflow: scroll;
 }
+
+.header-blue {
+    color: black;
+    background-color: #92DCE5;
+    border-color: #92DCE5;
+}

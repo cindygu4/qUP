@@ -104,7 +104,7 @@ def add_queue(request, class_id):
         form = NewQueueForm(request.POST)
         if form.is_valid():
             queue_name = form.cleaned_data['name']
-            date = form.cleaned_data['date']
+            queue_date = form.cleaned_data['date']
             start_time = form.cleaned_data['start_time']
             end_time = form.cleaned_data['end_time']
             location = form.cleaned_data['location']
@@ -121,7 +121,7 @@ def add_queue(request, class_id):
                 has_url = False
                 if meeting_url is not None:
                     has_url = True
-                Queue.objects.create(name=queue_name, classroom=classroom, date=date, start_time=start_time,
+                Queue.objects.create(name=queue_name, classroom=classroom, date=queue_date, start_time=start_time,
                                      end_time=end_time, location=location, description=description,
                                      meeting_url=meeting_url, has_meeting_url=has_url)
                 return redirect('teachers:view_class', classroom.id)
@@ -160,6 +160,32 @@ def edit_queue(request, queue_id):
     queue = Queue.objects.get(pk=queue_id)
     if request.method == 'POST':
         form = NewQueueForm(request.POST)
+        if form.is_valid():
+            queue_name = form.cleaned_data['name']
+            queue_date = form.cleaned_data['date']
+            start_time = form.cleaned_data['start_time']
+            end_time = form.cleaned_data['end_time']
+            location = form.cleaned_data['location']
+            description = form.cleaned_data['description']
+            meeting_url = form.cleaned_data['meeting_url']
+
+            # if end time is before start time, show a message
+            if end_time <= start_time:
+                messages.error(request, 'End Time should be later than Start Time.')
+                return render(request, "teachers/add_queue.html", {
+                    'form': form
+                })
+            else:
+                has_url = False
+                if meeting_url is not None:
+                    has_url = True
+                Queue.objects.filter(pk=queue_id).update(name=queue_name, date=queue_date, start_time=start_time,
+                                                         end_time=end_time, location=location, description=description,
+                                                         meeting_url=meeting_url, has_meeting_url=has_url)
+
+                return redirect('teachers:view_class', queue.classroom.id)
+        else:
+            return render(request,)
     else:
         form = NewQueueForm(initial={'name': queue.name, 'location': queue.location, 'meeting_url': queue.meeting_url,
                                     'date': queue.date, 'start_time': queue.start_time, 'end_time': queue.end_time,
