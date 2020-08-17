@@ -60,3 +60,8 @@ nav {
     background-color: #0F80D2;
     color: white;
 }
+
+.scrollable {
+    max-height: 360px;
+    overflow: scroll;
+}

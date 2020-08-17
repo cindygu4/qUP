@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 import json
 import pytz
-from datetime import datetime
+from datetime import date
 
 # Create your views here.
 def is_teacher(user):
@@ -21,17 +21,19 @@ def is_teacher(user):
 def index(request):
     teacher = request.user.teacher_profile
     current_queues = Queue.objects.filter(classroom__teacher=teacher, currently_meeting=True)
+    finished_queues = Queue.objects.filter(classroom__teacher=teacher, done=True)
+
+    # get the recently finished queues (finished within the last 7 days
+    recently_finished = []
+    for queue in finished_queues:
+        delta = timezone.localtime(timezone.now()).date() - queue.date
+        if delta.days <= 7:
+            recently_finished.append(queue)
+
     return render(request, "teachers/index.html", {
-        'current_queues': current_queues
+        'current_queues': current_queues, 'recently_finished': recently_finished
     })
 
-
-'''def convert_to_localtime(utctime):
-    fmt = '%d/%m/%Y %H:%M'
-    utc = utctime.replace(tzinfo=pytz.UTC)
-    localtz = utc.astimezone(timezone.get_current_timezone())
-    return localtz.strftime(fmt)
-'''
 
 @login_required
 @user_passes_test(is_teacher)
