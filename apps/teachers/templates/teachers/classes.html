@@ -40,14 +40,23 @@
                                                             <div class="form-group">
                                                                 <input id="class-name-input-{{ class.id }}" type="text" name="class-name" maxlength="64" class="form-control">
                                                             </div>
-                                                            <input type="submit" class="btn btn-light-sea-green save-btn-{{ class.id }}">
+                                                            <input type="submit" class="btn btn-light-sea-green save-btn-{{ class.id }}" value="Save">
                                                         </form>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-4 col-md-5 col-4 text-right" id="div-for-edit-btn-{{ class.id }}">
-                                                    <button class="btn btn-light-coral edit-btn btn-block" id="{{ class.id }}">
+                                            </div>
+                                        </div>
+                                        <div class="card-text">
+                                            <div class="row">
+                                                <div class="col-6" id="div-for-edit-btn-{{ class.id }}">
+                                                    <button class="btn btn-light-sea-green edit-btn btn-block" id="{{ class.id }}">
                                                         <span class="fa fa-edit"></span> Edit
                                                     </button>
+                                                </div>
+                                                <div class="col-6" id="div-for-delete-btn-{{ class.id }}">
+                                                    <a class="btn btn-danger delete-btn btn-block" id="{{ class.id }}" href="{% url 'teachers:delete_class' class.id %}">
+                                                        <span class="fa fa-trash"></span> Delete
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>

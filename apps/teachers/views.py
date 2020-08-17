@@ -184,11 +184,9 @@ def edit_queue(request, queue_id):
                                                          meeting_url=meeting_url, has_meeting_url=has_url)
 
                 return redirect('teachers:view_class', queue.classroom.id)
-        else:
-            return render(request,)
     else:
         form = NewQueueForm(initial={'name': queue.name, 'location': queue.location, 'meeting_url': queue.meeting_url,
-                                    'date': queue.date, 'start_time': queue.start_time, 'end_time': queue.end_time,
+                                     'date': queue.date, 'start_time': queue.start_time, 'end_time': queue.end_time,
                                      'description': queue.description})
 
     return render(request, "teachers/edit_queue.html", {
@@ -202,4 +200,15 @@ def delete_queue(request, queue_id):
     else:
         raise Http404("Queue does not exist")
 
-    return JsonResponse({"message": "Queue deleted successfully."}, status=201)
+    queue = Queue.objects.get(pk=queue_id)
+
+    return redirect('teachers:view_class', queue.classroom.id)
+
+@login_required()
+def delete_class(request, class_id):
+    if Classroom.objects.filter(pk=class_id).exists():
+        Classroom.objects.filter(pk=class_id).delete()
+    else:
+        raise Http404
+
+    return redirect('teachers:view_classes')

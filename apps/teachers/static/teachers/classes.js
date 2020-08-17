@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', (event) => {
             console.log(event.target.id);
             document.querySelector(`#div-for-edit-btn-${event.target.id}`).style.display = 'none';
+            document.querySelector(`#div-for-delete-btn-${event.target.id}`).style.display = 'none';
             const class_name = document.querySelector(`#class-name-${event.target.id}`);
             const orig_name = class_name.innerHTML;
             document.querySelector(`#class-name-${event.target.id}`).style.display = 'none';
@@ -55,6 +56,7 @@ function edit_class_name(target, orig_name) {
 
         edit_class_div.style.display = 'none';
         document.querySelector(`#div-for-edit-btn-${target.id}`).style.display = 'block';
+        document.querySelector(`#div-for-delete-btn-${target.id}`).style.display = 'block';
         const class_name = document.querySelector(`#class-name-${target.id}`);
         class_name.style.display = 'block';
         class_name.innerHTML = classNameInput.value;

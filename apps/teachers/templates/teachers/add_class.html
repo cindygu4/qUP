@@ -10,7 +10,7 @@
         <form action="{% url 'teachers:add_class' %}" method="post">
             {% csrf_token %}
             {{ form|crispy }}
-            <input type="submit" class="btn btn-middle-blue">
+            <input type="submit" class="btn btn-middle-blue" value="Create">
         </form>
     </div>
 {% endblock %}

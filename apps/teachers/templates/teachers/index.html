@@ -7,11 +7,10 @@
 
     <div style="margin-top: 2em;">
 
-        <div class="row ml-3 mr-3">
-            <div class="col"></div>
-            <div class="col-12 col-md-6 mr-2 mb-3">
+        <div class="row ml-5 mr-5">
+            <div class="col-12 col-md-6 mb-3">
                 {% for queue in current_queues %}
-                    <div class="card bg-light mb-3">
+                    <div class="card mb-3">
                         <div class="card-body">
                             <div class="card-title">
                                 <h5>{{ queue.classroom.name }} - {{ queue.name }}</h5>
@@ -40,7 +39,7 @@
                 {% endfor %}
             </div>
 
-            <div class="col-md-5 col-12">
+            <div class="col-md-6 col-12">
                 <div class="card">
                     <div class="card-header text-center header-blue">
                         <strong>Recent Office Hours</strong>
@@ -66,8 +65,6 @@
                     </ul>
                 </div>
             </div>
-
-            <div class="col"></div>
         </div>
 
 
