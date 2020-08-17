@@ -17,4 +17,7 @@ class Queue(models.Model):
     location = models.CharField(max_length=100, blank=False, null=True)
     description = models.TextField(blank=True, null=True)
     opened = models.BooleanField(default=False)
+    currently_meeting = models.BooleanField(default=False)
+    done = models.BooleanField(default=False)
     meeting_url = models.URLField(max_length=100, null=True, blank=True)
+    has_meeting_url = models.BooleanField(default=False)

@@ -7,7 +7,9 @@ from .forms import NewClassroomForm, NewQueueForm
 from django.utils.crypto import get_random_string
 from django.contrib import messages
 from django.http import JsonResponse
+from django.utils import timezone
 import json
+import pytz
 from datetime import datetime
 
 # Create your views here.
@@ -18,6 +20,14 @@ def is_teacher(user):
 @user_passes_test(is_teacher)
 def index(request):
     return render(request, "teachers/index.html")
+
+
+'''def convert_to_localtime(utctime):
+    fmt = '%d/%m/%Y %H:%M'
+    utc = utctime.replace(tzinfo=pytz.UTC)
+    localtz = utc.astimezone(timezone.get_current_timezone())
+    return localtz.strftime(fmt)
+'''
 
 @login_required
 @user_passes_test(is_teacher)
@@ -46,27 +56,38 @@ def add_class(request):
 
 def view_class(request, class_id):
     classroom = Classroom.objects.get(pk=class_id)
-    queues = Queue.objects.filter(classroom=classroom).order_by('date', 'start_time')
+    queues = Queue.objects.filter(classroom=classroom).order_by('currently_meeting', 'done', 'date', 'start_time')
     empty = True
     if queues:
         empty = False
 
-    open_list = []
     for queue in queues:
-        if (queue.date == datetime.today().date()) and (queue.start_time <= datetime.today().time()):
-            open_list.append(True)
-        else:
-            open_list.append(False)
+        # today = convert_to_localtime(datetime.today())
+        if (queue.date == timezone.localtime(timezone.now()).date()) and (queue.start_time <= timezone.localtime(
+                timezone.now()).time()) and (queue.end_time >= timezone.localtime(timezone.now()).time()):
 
-    joined_list = zip(queues, open_list)
+            if not queue.currently_meeting:
+                Queue.objects.filter(pk=queue.id).update(currently_meeting=True)
+        elif (queue.date < timezone.localtime(timezone.now()).date()) or ((queue.date == timezone.localtime(
+                timezone.now()).date()) and (queue.end_time <= timezone.localtime(timezone.now()).time())):
+
+            if not queue.done or queue.currently_meeting:
+                Queue.objects.filter(pk=queue.id).update(done=True)
+                Queue.objects.filter(pk=queue.id).update(currently_meeting=False)
+        else:
+            if queue.currently_meeting:
+                Queue.objects.filter(pk=queue.id).update(currently_meeting=False)
+
+    updated_queues = Queue.objects.filter(classroom=classroom).order_by('done', '-currently_meeting', 'date', 'start_time')
 
     return render(request, "teachers/classroom.html", {
-        'classroom': classroom, 'queues': joined_list, 'empty_list': empty
+        'classroom': classroom, 'queues': updated_queues, 'empty_list': empty
     })
 
 def upcoming_oh(request):
     # order the teacher's queues by date then start time
-    queues = Queue.objects.filter(classroom__teacher=request.user.teacher_profile).order_by('date', 'start_time')
+    queues = Queue.objects.filter(classroom__teacher=request.user.teacher_profile).order_by('date', 'start_time')\
+        .exclude(opened=True)
     return render(request, "teachers/upcoming_ohs.html", {
         'queues': queues
     })
@@ -82,6 +103,7 @@ def add_queue(request, class_id):
             end_time = form.cleaned_data['end_time']
             location = form.cleaned_data['location']
             description = form.cleaned_data['description']
+            meeting_url = form.cleaned_data['meeting_url']
 
             # if end time is before start time, show a message
             if end_time <= start_time:
@@ -90,8 +112,12 @@ def add_queue(request, class_id):
                     'classroom': classroom, 'form': form
                 })
             else:
+                has_url = False
+                if meeting_url is not None:
+                    has_url = True
                 Queue.objects.create(name=queue_name, classroom=classroom, date=date, start_time=start_time,
-                                     end_time=end_time, location=location, description=description)
+                                     end_time=end_time, location=location, description=description,
+                                     meeting_url=meeting_url, has_meeting_url=has_url)
                 return redirect('teachers:view_class', classroom.id)
     else:
         form = NewQueueForm()
@@ -100,7 +126,10 @@ def add_queue(request, class_id):
     })
 
 def open_queue(request, queue_id):
-    queue = Queue.objects.filter(pk=queue_id).update(opened=True)
+    queue = Queue.objects.filter(pk=queue_id)
+    queue.update(opened=True)
+    queue.update(currently_meeting=True)
+
     return redirect('teachers:opened_queue', queue_id)
 
 def opened_queue(request, queue_id):
@@ -122,12 +151,17 @@ def edit_class_name(request, class_id):
 
 @login_required
 def edit_queue(request, queue_id):
-    if request.method != "POST":
-        return JsonResponse({"error": "POST request required."}, status=400)
+    queue = Queue.objects.get(pk=queue_id)
+    if request.method == 'POST':
+        form = NewQueueForm(request.POST)
+    else:
+        form = NewQueueForm(initial={'name': queue.name, 'location': queue.location, 'meeting_url': queue.meeting_url,
+                                    'date': queue.date, 'start_time': queue.start_time, 'end_time': queue.end_time,
+                                     'description': queue.description})
 
-    data = json.loads(request.body)
-
-    return JsonResponse({"message": "Queue edited successfully."}, status=201)
+    return render(request, "teachers/edit_queue.html", {
+        'queue': queue, 'form': form
+    })
 
 @login_required
 def delete_queue(request, queue_id):

@@ -49,3 +49,14 @@ nav {
     background-color: #00B856;
     color: white;
 }
+
+.btn-bleu-de-france {
+    background-color: #108CE5;
+    color: white;
+}
+
+.btn-bleu-de-france:hover, .btn-bleu-de-france:focus,
+.btn-bleu-de-france:active {
+    background-color: #0F80D2;
+    color: white;
+}
