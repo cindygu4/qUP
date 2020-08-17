@@ -26,31 +26,44 @@
                             <div class="card mb-4 mt-2" style="width: 100%;">
                                 <div class="row no-gutters">
                                     <div class="card-body">
-                                        <h5 class="card-title" id="queue-name-{{ queue.id }}">
-                                            {{ queue.name }}
-                                        </h5>
-                                        <div class="row mb-3" id="edit-open-div-{{ queue.id }}">
-                                            <div class="col-5">
-                                                <a class="btn btn-light-coral edit-queue-btn btn-block" href="{% url 'teachers:edit_queue' queue.id %}">
-                                                    <span class="fa fa-edit"></span> Edit
-                                                </a>
+                                        <div class="card-title">
+                                            <div class="row">
+                                                <div class="col-8">
+                                                    <h5 id="queue-name-{{ queue.id }}">
+                                                        {{ queue.name }}
+                                                    </h5>
+                                                </div>
+                                                <div class="col-5 col-lg-4">
+                                                    <a class="btn btn-danger btn-block align-right" href="{% url 'teachers:delete_queue' queue.id %}">
+                                                        <span class="fa fa-trash"></span> Delete
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <div class="col-7">
-                                                {% if queue.currently_meeting and not queue.opened %}
-                                                    <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'teachers:open_queue' queue.id %}">
-                                                        Open Queue
+                                        </div>
+                                        <div class="card-text">
+                                            <div class="row mb-3" id="edit-open-div-{{ queue.id }}">
+                                                <div class="col-5">
+                                                    <a class="btn btn-light-coral edit-queue-btn btn-block" href="{% url 'teachers:edit_queue' queue.id %}">
+                                                        <span class="fa fa-edit"></span> Edit
                                                     </a>
-                                                {% endif %}
-                                                {% if queue.currently_meeting and queue.opened %}
-                                                    <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'teachers:opened_queue' queue.id %}">
-                                                        Join OH
-                                                    </a>
-                                                {% endif %}
-                                                {% if queue.done %}
-                                                    <a class="btn btn-block btn-bleu-de-france" id="{{ queue.id }}" href="#">
-                                                        View Feedback
-                                                    </a>
-                                                {% endif %}
+                                                </div>
+                                                <div class="col-7">
+                                                    {% if queue.currently_meeting and not queue.opened %}
+                                                        <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'teachers:open_queue' queue.id %}">
+                                                            Open Queue
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if queue.currently_meeting and queue.opened %}
+                                                        <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'teachers:opened_queue' queue.id %}">
+                                                            Join OH
+                                                        </a>
+                                                    {% endif %}
+                                                    {% if queue.done %}
+                                                        <a class="btn btn-block btn-bleu-de-france" id="{{ queue.id }}" href="#">
+                                                            View Feedback
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="card-text queue-info-{{ queue.id }}">
