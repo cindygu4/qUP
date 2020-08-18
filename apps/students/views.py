@@ -16,6 +16,11 @@ def is_student(user):
 @login_required
 @user_passes_test(is_student)
 def index(request):
+    # update all the queues in the classrooms that the student is in first
+    all_queues = Queue.objects.filter(classroom__students__user=request.user, display=True)
+    for queue in all_queues:
+        update_queue(queue)
+
     return render(request, "students/index.html")
 
 @login_required
@@ -65,6 +70,11 @@ def upcoming_oh(request):
 @login_required
 @user_passes_test(is_student)
 def view_notifications(request):
+    # update all the queues in the classrooms that the student is in first
+    all_queues = Queue.objects.filter(classroom__students__user=request.user, display=True)
+    for queue in all_queues:
+        update_queue(queue)
+
     return render(request, "students/notifications.html")
 
 

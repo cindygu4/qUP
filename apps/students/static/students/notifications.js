@@ -41,24 +41,25 @@ function add_notification(contents) {
     const second_col = document.createElement('div');
     second_col.className = 'col';
     const notification_col = document.createElement('div');
-    notification_col.className = 'col-10 col-md-6';
+    notification_col.className = 'col-9 col-md-8 col-lg-6';
     const notification = document.createElement('div');
     notification.className = 'card mb-3';
     const card_body = document.createElement('div');
     card_body.className = 'card-body';
     const title = document.createElement('h5');
-    title.className = 'card-title';
+    title.className = 'card-text';
     title.innerHTML = `${contents['class_name']} - ${contents['queue_name']}`;
     const date_time = document.createElement('div');
-    date_time.className = 'card-text';
+    date_time.className = 'card-title';
     date_time.innerHTML = `${contents['date']} at ${contents['time']}`;
     const info = document.createElement('div');
     info.className = 'card-text';
     info.innerHTML = `${contents['content']}`;
 
     // adding all parts to the row element
-    card_body.append(title);
+
     card_body.append(date_time);
+    card_body.append(title);
     card_body.append(info);
     notification.append(card_body);
     notification_col.append(notification);

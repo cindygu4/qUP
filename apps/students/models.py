@@ -1,5 +1,6 @@
 from django.db import models
 from apps.teachers.models import Classroom, Queue
+from apps.users.models import Student
 from django.utils import timezone
 
 # Create your models here.
@@ -29,5 +30,7 @@ class Feedback(models.Model):
     )
 
     queue = models.ForeignKey(Queue, on_delete=models.CASCADE, related_name='ratings')
+    student = models.OneToOneField(Student, on_delete=models.CASCADE, null=True)
+    completed = models.BooleanField(default=False)
     rating = models.IntegerField(choices=RATING_CHOICES)
     comments = models.TextField()
