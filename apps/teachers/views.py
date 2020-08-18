@@ -116,9 +116,9 @@ def upcoming_oh(request):
     for queue in all_queues:
         update_queue(queue)
 
-    # order the teacher's queues by date then start time
-    queues = Queue.objects.filter(classroom__teacher=teacher, display=True).order_by('date', 'start_time')\
-        .exclude(done=True)
+    # order the teacher's unopened and unfinished queues by date then start time
+    queues = Queue.objects.filter(classroom__teacher=teacher, display=True, opened=False)\
+        .order_by('date', 'start_time').exclude(done=True)
     return render(request, "teachers/upcoming_ohs.html", {
         'queues': queues
     })
@@ -169,6 +169,12 @@ def open_queue(request, queue_id):
     queue = Queue.objects.filter(pk=queue_id)
     queue.update(opened=True)
     queue.update(currently_meeting=True)
+
+    # Notify students of the queue being opened
+    q = Queue.objects.get(pk=queue_id)
+    Notification.objects.create(queue=q, content="Instructor has opened the queue for this office hours.",
+                                date=timezone.localtime(timezone.now()).date(),
+                                time=timezone.localtime(timezone.now()).time())
 
     all_queues = Queue.objects.filter(classroom__teacher=request.user.teacher_profile, display=True)
     for item in all_queues:

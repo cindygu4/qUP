@@ -56,8 +56,8 @@ def upcoming_oh(request):
         update_queue(queue)
 
     # order the teacher's queues by date then start time
-    queues = Queue.objects.filter(classroom__students__user=request.user, display=True).order_by('date', 'start_time')\
-        .exclude(done=True)
+    queues = Queue.objects.filter(classroom__students__user=request.user, display=True, opened=False)\
+        .order_by('date', 'start_time').exclude(done=True)
     return render(request, "students/upcoming_oh.html", {
         'queues': queues
     })
