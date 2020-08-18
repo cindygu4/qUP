@@ -6,18 +6,17 @@
     </div>
 
     <div style="margin-top: 2em;">
-        {% for queue in queues %}
+        {% for notification in notifications %}
             <div class="row">
                 <div class="col"></div>
                 <div class="col-10 col-md-6">
                     <div class="card mb-3">
                         <div class="card-body">
                             <div class="card-title">
-                                <h5>{{ queue.classroom.name }} - {{ queue.name }}</h5>
+                                <h5>{{ notification.queue.classroom.name }} - {{ notification.queue.name }}</h5>
                             </div>
-                            <div class="card-text">{{ queue.date }}</div>
-                            <div class="card-text">Starts: {{ queue.start_time }}</div>
-                            <div class="card-text">Ends: {{ queue.end_time }}</div>
+                            <div class="card-text">{{ notification.date }} at {{ notification.time }}</div>
+                            <div class="card-text">{{ notification.content }}</div>
                         </div>
                     </div>
                 </div>

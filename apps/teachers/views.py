@@ -237,7 +237,7 @@ def delete_queue(request, queue_id):
         # don't actually delete queue, just update it
         Queue.objects.filter(pk=queue_id).update(display=False)
         q = Queue.objects.get(pk=queue_id)
-        Notification.objects.create(queue=q, content="Instructor has deleted office hours.",
+        Notification.objects.create(queue=q, content="Instructor has deleted this office hours.",
                                     date=timezone.localtime(timezone.now()).date(),
                                     time=timezone.localtime(timezone.now()).time())
     else:

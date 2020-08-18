@@ -49,12 +49,12 @@ def view_classes(request):
 @user_passes_test(is_student)
 def upcoming_oh(request):
     # update all the queues in the classrooms that the student is in first
-    all_queues = Queue.objects.filter(classroom__students__user=request.user)
+    all_queues = Queue.objects.filter(classroom__students__user=request.user, display=True)
     for queue in all_queues:
         update_queue(queue)
 
     # order the teacher's queues by date then start time
-    queues = Queue.objects.filter(classroom__students__user=request.user).order_by('date', 'start_time')\
+    queues = Queue.objects.filter(classroom__students__user=request.user, display=True).order_by('date', 'start_time')\
         .exclude(done=True)
     return render(request, "students/upcoming_oh.html", {
         'queues': queues
@@ -63,5 +63,7 @@ def upcoming_oh(request):
 @login_required
 @user_passes_test(is_student)
 def view_notifications(request):
-    student_queues = Notification.objects.filter(queue__classroom__students__user=request.user)
-    return render(request, "students/notifications.html", )
+    notifications = Notification.objects.filter(queue__classroom__students__user=request.user)
+    return render(request, "students/notifications.html", {
+        'notifications': notifications
+    })

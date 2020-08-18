@@ -8,5 +8,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('classes/', views.view_classes, name='view_classes'),
     path('classes/join/', views.join_class, name='join_class'),
-    path('upcoming/', views.upcoming_oh, name='upcoming_oh')
+    path('upcoming/', views.upcoming_oh, name='upcoming_oh'),
+    path('notifications/', views.view_notifications, name='view_notifications')
 ]
