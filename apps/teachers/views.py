@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Classroom, Queue
 from apps.users.models import Teacher
+from apps.students.models import Notification, Feedback
 from django.http import Http404
 from .forms import NewClassroomForm, NewQueueForm
 from django.utils.crypto import get_random_string
@@ -18,11 +19,14 @@ def is_teacher(user):
 
 ''' Helper function to update a queue '''
 def update_queue(queue):
+    # if the queue date and time are within the bounds then update currently meeting to true
     if (queue.date == timezone.localtime(timezone.now()).date()) and (queue.start_time <= timezone.localtime(
             timezone.now()).time()) and (queue.end_time >= timezone.localtime(timezone.now()).time()):
 
         if not queue.currently_meeting:
             Queue.objects.filter(pk=queue.id).update(currently_meeting=True)
+
+    # else if the queue date is past or the end time has passed, then set done = True and currently_meeting = False
     elif (queue.date < timezone.localtime(timezone.now()).date()) or ((queue.date == timezone.localtime(
             timezone.now()).date()) and (queue.end_time <= timezone.localtime(timezone.now()).time())):
 
@@ -40,12 +44,12 @@ def index(request):
     teacher = request.user.teacher_profile
 
     # first update all the queues
-    all_queues = Queue.objects.filter(classroom__teacher=teacher)
+    all_queues = Queue.objects.filter(classroom__teacher=teacher, display=True)
     for single_queue in all_queues:
         update_queue(single_queue)
 
-    current_queues = Queue.objects.filter(classroom__teacher=teacher, currently_meeting=True)
-    finished_queues = Queue.objects.filter(classroom__teacher=teacher, done=True)
+    current_queues = Queue.objects.filter(classroom__teacher=teacher, currently_meeting=True, display=True)
+    finished_queues = Queue.objects.filter(classroom__teacher=teacher, done=True, display=True)
 
     # get the recently finished queues (finished within the last 7 days
     recently_finished = []
@@ -88,7 +92,7 @@ def add_class(request):
 @user_passes_test(is_teacher)
 def view_class(request, class_id):
     classroom = Classroom.objects.get(pk=class_id)
-    queues = Queue.objects.filter(classroom=classroom)
+    queues = Queue.objects.filter(classroom=classroom, display=True)
     empty = True
     if queues:
         empty = False
@@ -96,7 +100,8 @@ def view_class(request, class_id):
     for queue in queues:
         update_queue(queue)
 
-    updated_queues = Queue.objects.filter(classroom=classroom).order_by('done', '-currently_meeting', 'date', 'start_time')
+    updated_queues = Queue.objects.filter(classroom=classroom, display=True)\
+        .order_by('done', '-currently_meeting', 'date', 'start_time')
 
     return render(request, "teachers/classroom.html", {
         'classroom': classroom, 'queues': updated_queues, 'empty_list': empty
@@ -107,13 +112,13 @@ def view_class(request, class_id):
 def upcoming_oh(request):
     # update the queues first
     teacher = request.user.teacher_profile
-    all_queues = Queue.objects.filter(classroom__teacher=teacher)
+    all_queues = Queue.objects.filter(classroom__teacher=teacher, display=True)
     for queue in all_queues:
         update_queue(queue)
 
     # order the teacher's queues by date then start time
-    queues = Queue.objects.filter(classroom__teacher=teacher).order_by('date', 'start_time')\
-        .exclude(opened=True)
+    queues = Queue.objects.filter(classroom__teacher=teacher, display=True).order_by('date', 'start_time')\
+        .exclude(done=True)
     return render(request, "teachers/upcoming_ohs.html", {
         'queues': queues
     })
@@ -160,7 +165,7 @@ def open_queue(request, queue_id):
     queue.update(opened=True)
     queue.update(currently_meeting=True)
 
-    all_queues = Queue.objects.filter(classroom__teacher=request.user.teacher_profile)
+    all_queues = Queue.objects.filter(classroom__teacher=request.user.teacher_profile, display=True)
     for item in all_queues:
         update_queue(item)
 
@@ -229,7 +234,12 @@ def edit_queue(request, queue_id):
 @user_passes_test(is_teacher)
 def delete_queue(request, queue_id):
     if Queue.objects.filter(pk=queue_id).exists():
-        Queue.objects.filter(pk=queue_id).delete()
+        # don't actually delete queue, just update it
+        Queue.objects.filter(pk=queue_id).update(display=False)
+        q = Queue.objects.get(pk=queue_id)
+        Notification.objects.create(queue=q, content="Instructor has deleted office hours.",
+                                    date=timezone.localtime(timezone.now()).date(),
+                                    time=timezone.localtime(timezone.now()).time())
     else:
         raise Http404("Queue does not exist")
 

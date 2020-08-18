@@ -21,3 +21,4 @@ class Queue(models.Model):
     done = models.BooleanField(default=False)
     meeting_url = models.URLField(max_length=100, null=True, blank=True)
     has_meeting_url = models.BooleanField(default=False)
+    display = models.BooleanField(default=True)
