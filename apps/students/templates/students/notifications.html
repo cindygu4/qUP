@@ -1,28 +1,15 @@
 {% extends 'students/layout.html' %}
+{% load static %}
 
 {% block content %}
     <div class="container text-center" style="margin-top: 1em;">
         <h1>Notifications</h1>
     </div>
 
-    <div style="margin-top: 2em;">
-        {% for notification in notifications %}
-            <div class="row">
-                <div class="col"></div>
-                <div class="col-10 col-md-6">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="card-title">
-                                <h5>{{ notification.queue.classroom.name }} - {{ notification.queue.name }}</h5>
-                            </div>
-                            <div class="card-text">{{ notification.date }} at {{ notification.time }}</div>
-                            <div class="card-text">{{ notification.content }}</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col"></div>
-            </div>
-        {% endfor %}
-
+    <div id="notifications" style="margin-top: 2em; margin-bottom: 2em;">
     </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'students/notifications.js' %}"></script>
 {% endblock %}

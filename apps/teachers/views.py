@@ -148,9 +148,14 @@ def add_queue(request, class_id):
                 has_url = False
                 if meeting_url is not None:
                     has_url = True
-                Queue.objects.create(name=queue_name, classroom=classroom, date=queue_date, start_time=start_time,
+                q = Queue.objects.create(name=queue_name, classroom=classroom, date=queue_date, start_time=start_time,
                                      end_time=end_time, location=location, description=description,
                                      meeting_url=meeting_url, has_meeting_url=has_url)
+
+                Notification.objects.create(queue=q, content="Instructor has created this new office hours.",
+                                            date=timezone.localtime(timezone.now()).date(),
+                                            time=timezone.localtime(timezone.now()).time())
+
                 return redirect('teachers:view_class', classroom.id)
     else:
         form = NewQueueForm()
@@ -219,6 +224,11 @@ def edit_queue(request, queue_id):
                 Queue.objects.filter(pk=queue_id).update(name=queue_name, date=queue_date, start_time=start_time,
                                                          end_time=end_time, location=location, description=description,
                                                          meeting_url=meeting_url, has_meeting_url=has_url)
+
+                q = Queue.objects.get(pk=queue_id)
+                Notification.objects.create(queue=q, content="Instructor has made changes to this office hours.",
+                                            date=timezone.localtime(timezone.now()).date(),
+                                            time=timezone.localtime(timezone.now()).time())
 
                 return redirect('teachers:view_class', queue.classroom.id)
     else:

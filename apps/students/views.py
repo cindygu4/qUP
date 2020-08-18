@@ -6,6 +6,8 @@ from .models import Notification, Feedback
 from apps.teachers.views import update_queue
 from apps.users.models import Teacher, Student
 from django.contrib import messages
+from django.http import JsonResponse
+import time
 
 # Create your views here.
 def is_student(user):
@@ -63,7 +65,33 @@ def upcoming_oh(request):
 @login_required
 @user_passes_test(is_student)
 def view_notifications(request):
-    notifications = Notification.objects.filter(queue__classroom__students__user=request.user)
-    return render(request, "students/notifications.html", {
-        'notifications': notifications
-    })
+    return render(request, "students/notifications.html")
+
+
+''' API for getting a student's notifications '''
+@login_required
+@user_passes_test(is_student)
+def notifications(request):
+    # get all the notifications that relates to the student, order by reverse date and time
+    notification_list = Notification.objects.filter(queue__classroom__students__user=request.user)\
+        .order_by('-date', '-time')
+
+    # Get start and end points
+    start = int(request.GET.get("start") or 0)
+    end = int(request.GET.get("end") or (start + 9))
+
+    if end > len(notification_list):
+        end = len(notification_list)
+
+    if start != 0:
+        start -= 1
+
+    # Generate list of notifications
+    data = []
+    for i in range(start, end):
+        data.append(notification_list[i].serialize())
+
+    # Artificially delay speed of response
+    time.sleep(0.5)
+
+    return JsonResponse({"notifications": data})

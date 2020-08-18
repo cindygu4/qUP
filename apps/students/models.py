@@ -9,6 +9,16 @@ class Notification(models.Model):
     date = models.DateField(blank=False, null=True)
     time = models.TimeField(blank=False, null=True)
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "queue_name": self.queue.name,
+            "class_name": self.queue.classroom.name,
+            "date": self.date.strftime("%b %-d %Y"),
+            "time": self.time.strftime("%-I:%M %p"),
+            "content": self.content
+        }
+
 class Feedback(models.Model):
     RATING_CHOICES = (
         ('1', '1'),
