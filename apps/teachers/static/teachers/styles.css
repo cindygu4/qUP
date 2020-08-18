@@ -62,7 +62,7 @@ nav {
 }
 
 .scrollable {
-    max-height: 360px;
+    max-height: 400px;
     overflow: scroll;
 }
 

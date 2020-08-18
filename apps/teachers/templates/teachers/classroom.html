@@ -58,6 +58,11 @@
                                                             Join OH
                                                         </a>
                                                     {% endif %}
+                                                    {% if not queue.currently_meeting and not queue.opened %}
+                                                        <button class="btn btn-block btn-secondary" disabled>
+                                                            Closed
+                                                        </button>
+                                                    {% endif %}
                                                     {% if queue.done %}
                                                         <a class="btn btn-block btn-bleu-de-france" id="{{ queue.id }}" href="#">
                                                             View Feedback

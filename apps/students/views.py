@@ -42,3 +42,13 @@ def view_classes(request):
     return render(request, "students/classes.html", {
         'classrooms': classrooms
     })
+
+@login_required
+@user_passes_test(is_student)
+def upcoming_oh(request):
+    # order the teacher's queues by date then start time
+    queues = Queue.objects.filter(classroom__students__user=request.user).order_by('date', 'start_time')\
+        .exclude(opened=True)
+    return render(request, "students/upcoming_oh.html", {
+        'queues': queues
+    })

@@ -16,3 +16,47 @@ nav {
     background-color: #ADE4EB;
     color: black;
 }
+
+.btn-light-coral {
+    background-color: #FE6D73;
+    color: white;
+}
+
+.btn-light-coral:hover, .btn-light-coral:focus,
+.btn-light-coral:active {
+    background-color: #FD5D63;
+    color: white;
+}
+
+.btn-light-sea-green {
+    background-color: #17C3B2;
+    color: white;
+}
+
+.btn-light-sea-green:hover, .btn-light-sea-green:focus,
+.btn-light-sea-green:active {
+    background-color: #13A496;
+    color: white;
+}
+
+.btn-dark-pastel-green {
+    background-color: #00CC5F;
+    color: white;
+}
+
+.btn-dark-pastel-green:hover, .btn-dark-pastel-green:focus,
+.btn-dark-pastel-green:active {
+    background-color: #00B856;
+    color: white;
+}
+
+.btn-bleu-de-france {
+    background-color: #108CE5;
+    color: white;
+}
+
+.btn-bleu-de-france:hover, .btn-bleu-de-france:focus,
+.btn-bleu-de-france:active {
+    background-color: #0F80D2;
+    color: white;
+}

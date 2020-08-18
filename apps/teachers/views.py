@@ -16,10 +16,34 @@ from datetime import date
 def is_teacher(user):
     return user.is_teacher
 
+''' Helper function to update a queue '''
+def update_queue(queue):
+    if (queue.date == timezone.localtime(timezone.now()).date()) and (queue.start_time <= timezone.localtime(
+            timezone.now()).time()) and (queue.end_time >= timezone.localtime(timezone.now()).time()):
+
+        if not queue.currently_meeting:
+            Queue.objects.filter(pk=queue.id).update(currently_meeting=True)
+    elif (queue.date < timezone.localtime(timezone.now()).date()) or ((queue.date == timezone.localtime(
+            timezone.now()).date()) and (queue.end_time <= timezone.localtime(timezone.now()).time())):
+
+        if not queue.done or queue.currently_meeting:
+            Queue.objects.filter(pk=queue.id).update(done=True)
+            Queue.objects.filter(pk=queue.id).update(currently_meeting=False)
+    else:
+        if queue.currently_meeting:
+            Queue.objects.filter(pk=queue.id).update(currently_meeting=False)
+    return
+
 @login_required
 @user_passes_test(is_teacher)
 def index(request):
     teacher = request.user.teacher_profile
+
+    # first update all the queues
+    all_queues = Queue.objects.filter(classroom__teacher=teacher)
+    for single_queue in all_queues:
+        update_queue(single_queue)
+
     current_queues = Queue.objects.filter(classroom__teacher=teacher, currently_meeting=True)
     finished_queues = Queue.objects.filter(classroom__teacher=teacher, done=True)
 
@@ -60,29 +84,17 @@ def add_class(request):
         'form': form
     })
 
+@login_required
+@user_passes_test(is_teacher)
 def view_class(request, class_id):
     classroom = Classroom.objects.get(pk=class_id)
-    queues = Queue.objects.filter(classroom=classroom).order_by('currently_meeting', 'done', 'date', 'start_time')
+    queues = Queue.objects.filter(classroom=classroom)
     empty = True
     if queues:
         empty = False
 
     for queue in queues:
-        # today = convert_to_localtime(datetime.today())
-        if (queue.date == timezone.localtime(timezone.now()).date()) and (queue.start_time <= timezone.localtime(
-                timezone.now()).time()) and (queue.end_time >= timezone.localtime(timezone.now()).time()):
-
-            if not queue.currently_meeting:
-                Queue.objects.filter(pk=queue.id).update(currently_meeting=True)
-        elif (queue.date < timezone.localtime(timezone.now()).date()) or ((queue.date == timezone.localtime(
-                timezone.now()).date()) and (queue.end_time <= timezone.localtime(timezone.now()).time())):
-
-            if not queue.done or queue.currently_meeting:
-                Queue.objects.filter(pk=queue.id).update(done=True)
-                Queue.objects.filter(pk=queue.id).update(currently_meeting=False)
-        else:
-            if queue.currently_meeting:
-                Queue.objects.filter(pk=queue.id).update(currently_meeting=False)
+        update_queue(queue)
 
     updated_queues = Queue.objects.filter(classroom=classroom).order_by('done', '-currently_meeting', 'date', 'start_time')
 
@@ -90,14 +102,24 @@ def view_class(request, class_id):
         'classroom': classroom, 'queues': updated_queues, 'empty_list': empty
     })
 
+@login_required
+@user_passes_test(is_teacher)
 def upcoming_oh(request):
+    # update the queues first
+    teacher = request.user.teacher_profile
+    all_queues = Queue.objects.filter(classroom__teacher=teacher)
+    for queue in all_queues:
+        update_queue(queue)
+
     # order the teacher's queues by date then start time
-    queues = Queue.objects.filter(classroom__teacher=request.user.teacher_profile).order_by('date', 'start_time')\
+    queues = Queue.objects.filter(classroom__teacher=teacher).order_by('date', 'start_time')\
         .exclude(opened=True)
     return render(request, "teachers/upcoming_ohs.html", {
         'queues': queues
     })
 
+@login_required
+@user_passes_test(is_teacher)
 def add_queue(request, class_id):
     classroom = Classroom.objects.get(pk=class_id)
     if request.method == 'POST':
@@ -131,13 +153,21 @@ def add_queue(request, class_id):
         'classroom': classroom, 'form': form
     })
 
+@login_required
+@user_passes_test(is_teacher)
 def open_queue(request, queue_id):
     queue = Queue.objects.filter(pk=queue_id)
     queue.update(opened=True)
     queue.update(currently_meeting=True)
 
+    all_queues = Queue.objects.filter(classroom__teacher=request.user.teacher_profile)
+    for item in all_queues:
+        update_queue(item)
+
     return redirect('teachers:opened_queue', queue_id)
 
+@login_required
+@user_passes_test(is_teacher)
 def opened_queue(request, queue_id):
     queue = Queue.objects.get(pk=queue_id)
     return render(request, "teachers/opened_oh.html", {
@@ -145,6 +175,7 @@ def opened_queue(request, queue_id):
     })
 
 @login_required
+@user_passes_test(is_teacher)
 def edit_class_name(request, class_id):
     if request.method != "POST":
         return JsonResponse({"error": "POST request required."}, status=400)
@@ -156,6 +187,7 @@ def edit_class_name(request, class_id):
     return JsonResponse({"message": "Class name edited successfully."}, status=201)
 
 @login_required
+@user_passes_test(is_teacher)
 def edit_queue(request, queue_id):
     queue = Queue.objects.get(pk=queue_id)
     if request.method == 'POST':
@@ -194,6 +226,7 @@ def edit_queue(request, queue_id):
     })
 
 @login_required
+@user_passes_test(is_teacher)
 def delete_queue(request, queue_id):
     if Queue.objects.filter(pk=queue_id).exists():
         Queue.objects.filter(pk=queue_id).delete()
@@ -205,6 +238,7 @@ def delete_queue(request, queue_id):
     return redirect('teachers:view_class', queue.classroom.id)
 
 @login_required()
+@user_passes_test(is_teacher)
 def delete_class(request, class_id):
     if Classroom.objects.filter(pk=class_id).exists():
         Classroom.objects.filter(pk=class_id).delete()
