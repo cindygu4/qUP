@@ -71,3 +71,8 @@ nav {
     background-color: #92DCE5;
     border-color: #92DCE5;
 }
+
+.star-rating-clicked {
+    color: #4ECDC4;
+    cursor: pointer;
+}

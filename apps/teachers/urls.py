@@ -18,6 +18,7 @@ urlpatterns = [
     path('queues/<int:queue_id>/edit/', views.edit_queue, name='edit_queue'),
     path('queues/<int:line_id>/done/', views.finished_helping, name='finished_helping'),
     path('queues/<int:queue_id>/end/', views.end_queue, name='end_queue'),
+    path('queues/<int:queue_id>/feedback/', views.view_feedback, name='view_feedback'),
 
     # API stuff
     path('classes/<int:class_id>/rename_class/', views.edit_class_name, name='rename_class')

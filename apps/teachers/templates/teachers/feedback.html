@@ -1,5 +1,44 @@
 {% extends 'teachers/layout.html' %}
 
 {% block content %}
-    <h1>Feedback</h1>
+    <div class="container" style="margin-top: 1em;">
+        <h1 style="text-align: center">Feedback for "{{ queue.name }}"</h1>
+    </div>
+    <div class="container" style="margin-top: 2em;">
+        <div class="row">
+            <div class="col-12 col-md-5 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Response Stats</h5>
+                        <div class="card-text">
+                            Responses: {{ num_completed }}
+                        </div>
+                        <div class="card-text">
+                            {% if avg_rating.avg_rating is not None %}
+                                Avg. Rating: {{ avg_rating.avg_rating|floatformat:1 }} <span class="fa fa-star star star-rating-clicked"></span>
+                            {% else %}
+                                Avg. Rating: Unavailable
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-7 col-lg-8">
+                {% for feedback in feedback_list %}
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ feedback.rating }} <span class="fa fa-star star star-rating-clicked"></span>
+                            </h5>
+                            <div class="card-text">
+                                {{ feedback.comments }}
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-center mt-5">No feedback yet.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

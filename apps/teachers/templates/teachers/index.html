@@ -57,7 +57,7 @@
                                         {{ queue.classroom.name }} <br> {{ queue.name }}
                                     </div>
                                     <div class="col-lg-6 col-md-8 col-12 mt-2">
-                                        <button class="btn btn-block btn-light-sea-green">View Feedback</button>
+                                        <a class="btn btn-block btn-light-sea-green" href="{% url 'teachers:view_feedback' queue.id %}">View Feedback</a>
                                     </div>
                                 </div>
                             </li>

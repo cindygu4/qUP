@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.utils import timezone
 import json
+from django.db.models import Avg
 import pytz
 from datetime import date
 
@@ -294,3 +295,14 @@ def end_queue(request, queue_id):
                                 date=timezone.localtime(timezone.now()).date(),
                                 time=timezone.localtime(timezone.now()).time())
     return redirect('teachers:index')
+
+@login_required()
+@user_passes_test(is_teacher)
+def view_feedback(request, queue_id):
+    queue = Queue.objects.get(pk=queue_id)
+    feedback_list = Feedback.objects.filter(queue=queue, completed=True)
+    num_completed = Feedback.objects.filter(queue=queue, completed=True).count()
+    avg_rating = Feedback.objects.filter(queue=queue, completed=True).aggregate(avg_rating=Avg('rating'))
+    return render(request, "teachers/feedback.html", {
+        'queue': queue, 'feedback_list': feedback_list, 'num_completed': num_completed, 'avg_rating': avg_rating
+    })
