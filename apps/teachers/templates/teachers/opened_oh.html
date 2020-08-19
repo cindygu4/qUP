@@ -51,7 +51,9 @@
                                 <br>
                                 Description: {{ item.description }}
                             </div>
-                            <a class="btn btn-middle-blue mt-3" href="{% url 'teachers:finished_helping' item.id %}">Finished Helping</a>
+                            {% if forloop.counter == 1 %}
+                                <a class="btn btn-middle-blue mt-3" href="{% url 'teachers:finished_helping' item.id %}">Finished Helping</a>
+                            {% endif %}
                         </div>
                     </div>
                 {% empty %}
