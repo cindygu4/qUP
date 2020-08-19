@@ -5,7 +5,7 @@ given during a specific instructors' office hours, providing valuable feedback t
 the instructor. 
 
 Project Structure
----
+--
 This project has 3 apps:
 * `users`
 * `students`
