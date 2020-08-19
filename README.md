@@ -17,14 +17,14 @@ Users App
 The users app handles all of the login and registration for both students and teachers.
 
 
-####Static Folder
+#### Static Folder
 * `styles.css`
 
 Students App
 ----
 The students app contains all the files needed for the student side.
 
-####Static Folder
+#### Static Folder
 * `feedback.js`
 * `notifications.js`
 * `styles.css`
@@ -33,6 +33,6 @@ Teachers App
 ----
 The teachers app contains all the files needed for the teacher side
 
-####Static Folder
+#### Static Folder
 * `classes.js`
 * `styles.css`
