@@ -4,8 +4,7 @@ create office hours and open up queues that their students can join. Additionall
 given during a specific instructors' office hours, providing valuable feedback to 
 the instructor. 
 
-Project Structure
---
+## Project Structure
 This project has 3 apps:
 * `users`
 * `students`
