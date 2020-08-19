@@ -24,6 +24,10 @@ class OfficeHoursLine(models.Model):
     queue = models.ForeignKey(Queue, on_delete=models.CASCADE, related_name='oh_lines')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='oh_lines')
     got_help = models.BooleanField(default=False)
+    location = models.CharField(max_length=100, blank=True, null=True)
+    student_url = models.URLField(max_length=100, null=True, blank=True)
+    has_student_url = models.BooleanField(default=False)
+    description = models.TextField(blank=True, null=True)
     time_joined = models.TimeField(blank=False, null=True)
 
 '''If a student was in the line and got help, then create a feedback form for them to fill out.'''

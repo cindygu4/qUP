@@ -5,8 +5,8 @@
         <h1 style="text-align: center">{{ queue.name }}</h1>
     </div>
 
-    <div class="container">
-        <a class="btn btn-danger" href="{% url 'teachers:end_queue' queue.id %}">End Office Hours</a>
+    <div class="row">
+        <div class="col-5" style="margin-left: 2.5em;"><a class="btn btn-danger" href="{% url 'teachers:end_queue' queue.id %}">End Office Hours</a></div>
     </div>
 
     <div style="margin-top: 2em;">
@@ -37,8 +37,18 @@
                             <h5 class="card-title">
                                 {{ item.student.user.first_name }} {{ item.student.user.last_name }}
                             </h5>
-                            <div class="card-text">
+                            <div class="card-text mb-3">
                                 Joined at {{ item.time_joined }}
+                            </div>
+                            <div class="card-text">
+                                Location: {{ item.location }}<br>
+                                {% if item.has_student_url %}
+                                    Student Meeting URL: <a href="{{ item.student_url }}">{{ item.student_url }}</a>
+                                {% else %}
+                                    Student Meeting URL: None
+                                {% endif %}
+                                <br>
+                                Description: {{ item.description }}
                             </div>
                             <a class="btn btn-middle-blue mt-3" href="{% url 'teachers:finished_helping' item.id %}">Finished Helping</a>
                         </div>

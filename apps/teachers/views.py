@@ -49,8 +49,10 @@ def index(request):
     for single_queue in all_queues:
         update_queue(single_queue)
 
-    current_queues = Queue.objects.filter(classroom__teacher=teacher, currently_meeting=True, done=False, display=True)
-    finished_queues = Queue.objects.filter(classroom__teacher=teacher, done=True, display=True)
+    current_queues = Queue.objects.filter(classroom__teacher=teacher, currently_meeting=True, done=False, display=True)\
+        .order_by('start_time')
+    finished_queues = Queue.objects.filter(classroom__teacher=teacher, done=True, display=True).order_by('-date',
+                                                                                                         '-start_time')
 
     # get the recently finished queues (finished within the last 7 days
     recently_finished = []

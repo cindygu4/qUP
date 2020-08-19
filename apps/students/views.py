@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import JoinClassForm
+from .forms import JoinClassForm, JoinQueueForm
 from apps.teachers.models import Classroom, Queue
 from .models import Notification, Feedback, OfficeHoursLine
 from apps.teachers.views import update_queue
@@ -24,8 +24,9 @@ def index(request):
         update_queue(single_queue)
 
     current_queues = Queue.objects.filter(classroom__students__user=request.user, currently_meeting=True,
-                                          done=False, display=True)
-    finished_queues = Queue.objects.filter(classroom__students__user=request.user, done=True, display=True)
+                                          done=False, display=True).order_by('start_time')
+    finished_queues = Queue.objects.filter(classroom__students__user=request.user, done=True, display=True)\
+        .order_by('-date', '-start_time')
 
     # get the recently finished queues (finished within the last 7 days
     recently_finished = []
@@ -151,20 +152,37 @@ def opened_queue(request, queue_id):
         already_joined = True
 
     return render(request, "students/opened_queue.html", {
-        'queue': queue, 'oh_line': oh_line, 'already_joined': already_joined
+        'queue': queue, 'oh_line': oh_line, 'already_joined': already_joined, 'form': JoinQueueForm()
     })
 
 @login_required
 @user_passes_test(is_student)
 def join_queue(request, queue_id):
-    if Classroom.objects.filter(students__user=request.user).exists() and Queue.objects.filter(pk=queue_id).exists():
-        # allow them to join the queue
-        queue = Queue.objects.get(pk=queue_id)
-        if not OfficeHoursLine.objects.filter(queue=queue, student=request.user.student_profile, got_help=False).exists():
-            OfficeHoursLine.objects.create(queue=queue, student=request.user.student_profile,
-                                           time_joined=timezone.localtime(timezone.now()).time())
-    else:
-        raise Http404
+    if request.method == 'POST':
+        form = JoinQueueForm(request.POST)
+        if form.is_valid():
+            location = form.cleaned_data['location']
+            meeting_url = form.cleaned_data['meeting_url']
+            description = form.cleaned_data['description']
+
+            if Classroom.objects.filter(students__user=request.user).exists() and Queue.objects.filter(pk=queue_id).exists():
+                # allow them to join the queue
+                queue = Queue.objects.get(pk=queue_id)
+                if not OfficeHoursLine.objects.filter(queue=queue, student=request.user.student_profile, got_help=False)\
+                        .exists():
+                    student = request.user.student_profile
+                    if meeting_url is None or meeting_url == '':
+                        OfficeHoursLine.objects.create(queue=queue, student=student, location=location,
+                                                       time_joined=timezone.localtime(timezone.now()).time(),
+                                                       has_student_url=False, student_url=meeting_url,
+                                                       description=description)
+                    else:
+                        OfficeHoursLine.objects.create(queue=queue, student=student, location=location,
+                                                       has_student_url=True, student_url=meeting_url,
+                                                       time_joined=timezone.localtime(timezone.now()).time(),
+                                                       description=description)
+            else:
+                raise Http404
 
     return redirect('students:opened_queue', queue_id)
 

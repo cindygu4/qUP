@@ -64,7 +64,7 @@
                                                         </button>
                                                     {% endif %}
                                                     {% if queue.done %}
-                                                        <a class="btn btn-block btn-bleu-de-france" id="{{ queue.id }}" href="#">
+                                                        <a class="btn btn-block btn-bleu-de-france" id="{{ queue.id }}" href="{% url 'teachers:view_feedback' queue.id %}">
                                                             View Feedback
                                                         </a>
                                                     {% endif %}

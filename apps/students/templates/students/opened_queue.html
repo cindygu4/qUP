@@ -5,19 +5,11 @@
         <h1 style="text-align: center">{{ queue.name }}</h1>
     </div>
 
-    <div class="container">
-        {% if already_joined and not queue.done %}
-            <button class="btn btn-secondary" disabled>Join Queue</button>
-        {% else %}
-            <a class="btn btn-middle-blue" href="{% url 'students:join_queue' queue.id %}">Join Queue</a>
-        {% endif %}
-    </div>
-
-    <div style="margin-top: 2em;">
+    <div style="margin-top: 3em;">
 
         <div class="row ml-4 mr-4">
             <div class="col-12 col-md-5 mb-3">
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="card-title">Office Hours Info</h5>
                         <div class="card-text">
@@ -32,6 +24,25 @@
                         </div>
                     </div>
                 </div>
+                <div class="card mb-5">
+                    <div class="card-body">
+                        <h5 class="card-title">Fill out this form to join the queue.</h5>
+
+                        <div class="card-text">
+                            {% load crispy_forms_tags %}
+                            <form action="{% url 'students:join_queue' queue.id %}" method="post">
+                                {% csrf_token %}
+                                {{ form|crispy }}
+                                {% if already_joined or queue.done %}
+                                    <button class="btn btn-secondary" disabled>Join Queue</button>
+                                {% else %}
+                                    <input type="submit" class="btn btn-middle-blue" value="Join Queue">
+                                {% endif %}
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-7 col-12 mb-5">
@@ -41,8 +52,12 @@
                             <h5 class="card-title">
                                 {{ item.student.user.first_name }} {{ item.student.user.last_name }}
                             </h5>
-                            <div class="card-text">
+                            <div class="card-text mb-3">
                                 Joined at {{ item.time_joined }}
+                            </div>
+                            <div class="card-text">
+                                Location: {{ item.location }}<br>
+                                Description: {{ item.description }}
                             </div>
                         </div>
                     </div>
