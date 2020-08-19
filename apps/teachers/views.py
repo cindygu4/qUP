@@ -194,8 +194,9 @@ def open_queue(request, queue_id):
 def opened_queue(request, queue_id):
     queue = Queue.objects.get(pk=queue_id)
     oh_line = OfficeHoursLine.objects.filter(queue=queue, got_help=False).order_by('time_joined')
+    num_students = OfficeHoursLine.objects.filter(queue=queue, got_help=False).count()
     return render(request, "teachers/opened_oh.html", {
-        'queue': queue, 'oh_line': oh_line
+        'queue': queue, 'oh_line': oh_line, 'num_students': num_students
     })
 
 @login_required

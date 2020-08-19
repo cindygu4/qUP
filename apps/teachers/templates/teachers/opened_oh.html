@@ -30,12 +30,13 @@
                 </div>
             </div>
 
-            <div class="col-md-7 col-12 mb-5">
+            <div class="col-md-7 col-12 mb-5" style="margin-top: -1.5em;">
+                <h5 class="mb-3">In Queue <span class="badge badge-pill btn-info"> {{ num_students }}</span></h5>
                 {% for item in oh_line %}
                     <div class="card mb-3">
                         <div class="card-body">
                             <h5 class="card-title">
-                                {{ item.student.user.first_name }} {{ item.student.user.last_name }}
+                                {{ forloop.counter }}. {{ item.student.user.first_name }} {{ item.student.user.last_name }}
                             </h5>
                             <div class="card-text mb-3">
                                 Joined at {{ item.time_joined }}

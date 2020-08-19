@@ -151,8 +151,11 @@ def opened_queue(request, queue_id):
     if OfficeHoursLine.objects.filter(queue=queue, student=request.user.student_profile, got_help=False).exists():
         already_joined = True
 
+    num_students = OfficeHoursLine.objects.filter(queue=queue, got_help=False).count()
+
     return render(request, "students/opened_queue.html", {
-        'queue': queue, 'oh_line': oh_line, 'already_joined': already_joined, 'form': JoinQueueForm()
+        'queue': queue, 'oh_line': oh_line, 'already_joined': already_joined, 'form': JoinQueueForm(),
+        'num_students': num_students
     })
 
 @login_required
