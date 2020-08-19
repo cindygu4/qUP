@@ -54,13 +54,15 @@
                             <li class="list-group-item">
                                 <div class="row">
                                     <div class="col-lg-6 col-md-10 col-12">
-                                        {{ queue.classroom.name }} - {{ queue.name }}
+                                        {{ queue.classroom.name }}<br>{{ queue.name }}
                                     </div>
                                     <div class="col-lg-6 col-md-8 col-12 mt-2">
                                         {% if feedback.completed %}
                                             <button class="btn btn-block btn-secondary" disabled>Feedback Given</button>
                                         {% else %}
-                                            <a class="btn btn-block btn-light-sea-green" href="#">Give Feedback</a>
+                                            <a class="btn btn-block btn-light-sea-green" href="{% url 'students:give_feedback' queue.id %}">
+                                                Give Feedback
+                                            </a>
                                         {% endif %}
                                     </div>
                                 </div>

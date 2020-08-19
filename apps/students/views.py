@@ -166,3 +166,13 @@ def join_queue(request, queue_id):
         raise Http404
 
     return redirect('students:opened_queue', queue_id)
+
+@login_required
+@user_passes_test(is_student)
+def give_feedback(request, queue_id):
+    queue = Queue.objects.get(pk=queue_id)
+    student = request.user.student_profile
+    feedback = Feedback.objects.get_or_create(student=student, queue=queue)
+    return render(request, "students/give_feedback.html", {
+        'queue': queue, 'feedback': feedback
+    })

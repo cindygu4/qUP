@@ -145,12 +145,16 @@ def add_queue(request, class_id):
                     'classroom': classroom, 'form': form
                 })
             else:
-                has_url = False
-                if meeting_url is not None:
-                    has_url = True
-                q = Queue.objects.create(name=queue_name, classroom=classroom, date=queue_date, start_time=start_time,
-                                     end_time=end_time, location=location, description=description,
-                                     meeting_url=meeting_url, has_meeting_url=has_url)
+                if meeting_url is None or meeting_url == '':
+                    q = Queue.objects.create(name=queue_name, classroom=classroom, date=queue_date,
+                                             start_time=start_time,
+                                             end_time=end_time, location=location, description=description,
+                                             meeting_url=meeting_url, has_meeting_url=False)
+                else:
+                    q = Queue.objects.create(name=queue_name, classroom=classroom, date=queue_date,
+                                             start_time=start_time,
+                                             end_time=end_time, location=location, description=description,
+                                             meeting_url=meeting_url, has_meeting_url=True)
 
                 Notification.objects.create(queue=q, content="Instructor has created this new office hours.",
                                             date=timezone.localtime(timezone.now()).date(),
