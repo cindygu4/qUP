@@ -48,19 +48,19 @@
                                                     </a>
                                                 </div>
                                                 <div class="col-7">
-                                                    {% if queue.currently_meeting and not queue.opened %}
+                                                    {% if queue.currently_meeting and not queue.opened and not queue.done %}
                                                         <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'teachers:open_queue' queue.id %}">
                                                             Open Queue
                                                         </a>
                                                     {% endif %}
-                                                    {% if queue.currently_meeting and queue.opened %}
+                                                    {% if queue.currently_meeting and queue.opened and not queue.done%}
                                                         <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'teachers:opened_queue' queue.id %}">
-                                                            Join OH
+                                                            Join
                                                         </a>
                                                     {% endif %}
-                                                    {% if not queue.currently_meeting and not queue.opened %}
+                                                    {% if not queue.currently_meeting and not queue.opened and not queue.done%}
                                                         <button class="btn btn-block btn-secondary" disabled>
-                                                            Closed
+                                                            Unavailable
                                                         </button>
                                                     {% endif %}
                                                     {% if queue.done %}

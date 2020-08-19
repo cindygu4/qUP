@@ -4,4 +4,76 @@
     <div class="container" style="margin-top: 1em;">
         <h1 style="text-align: center">Dashboard</h1>
     </div>
+
+    <div style="margin-top: 2em;">
+
+        <div class="row ml-5 mr-5">
+            <div class="col-12 col-md-6 mb-3">
+                {% for queue in current_queues %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="card-title">
+                                <h5>{{ queue.classroom.name }} - {{ queue.name }}</h5>
+                            </div>
+                            <div class="card-text mb-3">
+                                {% if queue.currently_meeting and not queue.opened and not queue.done %}
+                                    <button class="btn btn-block btn-secondary" disabled>
+                                        Please Wait
+                                    </button>
+                                {% endif %}
+                                {% if queue.currently_meeting and queue.opened and not queue.done %}
+                                    <a class="btn btn-block btn-dark-pastel-green" id="{{ queue.id }}" href="{% url 'students:opened_queue' queue.id %}">
+                                        Join Office Hours
+                                    </a>
+                                {% endif %}
+                            </div>
+                            <div class="card-text">{{ queue.date }}</div>
+                            <div class="card-text">Starts: {{ queue.start_time }}</div>
+                            <div class="card-text">Ends: {{ queue.end_time }}</div>
+                            {% if queue.has_url %}
+                                <div class="card-text">Meeting URL: <a>{{ queue.meeting_url }}</a></div>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="text-center">
+                        No office hours currently available.
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-md-6 col-12 mb-5">
+                <div class="card">
+                    <div class="card-header text-center header-blue">
+                        <strong>Recently Attended Office Hours</strong>
+                    </div>
+
+                    <ul class="list-group list-group-flush scrollable">
+                        {% for queue, feedback in recently_attended %}
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-10 col-12">
+                                        {{ queue.classroom.name }} - {{ queue.name }}
+                                    </div>
+                                    <div class="col-lg-6 col-md-8 col-12 mt-2">
+                                        {% if feedback.completed %}
+                                            <button class="btn btn-block btn-secondary" disabled>Feedback Given</button>
+                                        {% else %}
+                                            <a class="btn btn-block btn-light-sea-green" href="#">Give Feedback</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="list-group-item text-center">
+                                No office hours attended in the past 7 days.
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
 {% endblock %}

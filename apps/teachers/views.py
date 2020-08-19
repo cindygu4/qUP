@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Classroom, Queue
 from apps.users.models import Teacher
-from apps.students.models import Notification, Feedback
+from apps.students.models import Notification, Feedback, OfficeHoursLine
 from django.http import Http404
 from .forms import NewClassroomForm, NewQueueForm
 from django.utils.crypto import get_random_string
@@ -48,7 +48,7 @@ def index(request):
     for single_queue in all_queues:
         update_queue(single_queue)
 
-    current_queues = Queue.objects.filter(classroom__teacher=teacher, currently_meeting=True, display=True)
+    current_queues = Queue.objects.filter(classroom__teacher=teacher, currently_meeting=True, done=False, display=True)
     finished_queues = Queue.objects.filter(classroom__teacher=teacher, done=True, display=True)
 
     # get the recently finished queues (finished within the last 7 days
@@ -186,8 +186,9 @@ def open_queue(request, queue_id):
 @user_passes_test(is_teacher)
 def opened_queue(request, queue_id):
     queue = Queue.objects.get(pk=queue_id)
+    oh_line = OfficeHoursLine.objects.filter(queue=queue, got_help=False).order_by('time_joined')
     return render(request, "teachers/opened_oh.html", {
-        'queue': queue
+        'queue': queue, 'oh_line': oh_line
     })
 
 @login_required
@@ -272,3 +273,20 @@ def delete_class(request, class_id):
         raise Http404
 
     return redirect('teachers:view_classes')
+
+@login_required()
+@user_passes_test(is_teacher)
+def finished_helping(request, line_id):
+    line_item = OfficeHoursLine.objects.get(pk=line_id)
+    OfficeHoursLine.objects.filter(pk=line_id).update(got_help=True)
+    return redirect('teachers:opened_queue', line_item.queue.id)
+
+@login_required()
+@user_passes_test(is_teacher)
+def end_queue(request, queue_id):
+    Queue.objects.filter(pk=queue_id).update(done=True, currently_meeting=False)
+    q = Queue.objects.get(pk=queue_id)
+    Notification.objects.create(queue=q, content="Instructor has ended this office hours.",
+                                date=timezone.localtime(timezone.now()).date(),
+                                time=timezone.localtime(timezone.now()).time())
+    return redirect('teachers:index')

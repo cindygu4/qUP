@@ -1,4 +1,4 @@
-{% extends 'teachers/layout.html' %}
+{% extends 'students/layout.html' %}
 
 {% block content %}
     <div class="container" style="margin-top: 1em;">
@@ -6,7 +6,11 @@
     </div>
 
     <div class="container">
-        <a class="btn btn-danger" href="{% url 'teachers:end_queue' queue.id %}">End Office Hours</a>
+        {% if already_joined and not queue.done %}
+            <button class="btn btn-secondary" disabled>Join Queue</button>
+        {% else %}
+            <a class="btn btn-middle-blue" href="{% url 'students:join_queue' queue.id %}">Join Queue</a>
+        {% endif %}
     </div>
 
     <div style="margin-top: 2em;">
@@ -40,7 +44,6 @@
                             <div class="card-text">
                                 Joined at {{ item.time_joined }}
                             </div>
-                            <a class="btn btn-middle-blue mt-3" href="{% url 'teachers:finished_helping' item.id %}">Finished Helping</a>
                         </div>
                     </div>
                 {% empty %}
@@ -54,6 +57,4 @@
 
 
     </div>
-
-
 {% endblock %}

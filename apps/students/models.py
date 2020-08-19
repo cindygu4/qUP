@@ -20,6 +20,13 @@ class Notification(models.Model):
             "content": self.content
         }
 
+class OfficeHoursLine(models.Model):
+    queue = models.ForeignKey(Queue, on_delete=models.CASCADE, related_name='oh_lines')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='oh_lines')
+    got_help = models.BooleanField(default=False)
+    time_joined = models.TimeField(blank=False, null=True)
+
+'''If a student was in the line and got help, then create a feedback form for them to fill out.'''
 class Feedback(models.Model):
     RATING_CHOICES = (
         ('1', '1'),
@@ -30,7 +37,7 @@ class Feedback(models.Model):
     )
 
     queue = models.ForeignKey(Queue, on_delete=models.CASCADE, related_name='ratings')
-    student = models.OneToOneField(Student, on_delete=models.CASCADE, null=True)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='ratings', null=True)
     completed = models.BooleanField(default=False)
-    rating = models.IntegerField(choices=RATING_CHOICES)
-    comments = models.TextField()
+    rating = models.IntegerField(choices=RATING_CHOICES, blank=True, null=True)
+    comments = models.TextField(blank=True, null=True)

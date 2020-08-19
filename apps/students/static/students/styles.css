@@ -60,3 +60,14 @@ nav {
     background-color: #0F80D2;
     color: white;
 }
+
+.scrollable {
+    max-height: 400px;
+    overflow: scroll;
+}
+
+.header-blue {
+    color: black;
+    background-color: #92DCE5;
+    border-color: #92DCE5;
+}
