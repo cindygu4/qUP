@@ -73,5 +73,11 @@ nav {
 }
 
 .star-rating {
+    color: #AEB8C2;
+    cursor: pointer;
+}
+
+.star-rating-clicked {
     color: #4ECDC4;
+    cursor: pointer;
 }

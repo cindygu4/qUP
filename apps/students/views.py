@@ -173,6 +173,11 @@ def give_feedback(request, queue_id):
     queue = Queue.objects.get(pk=queue_id)
     student = request.user.student_profile
     feedback = Feedback.objects.get_or_create(student=student, queue=queue)
+
+    # if student already completed feedback, redirect them to the dashboard
+    if feedback[0].completed:
+        return redirect('students:index')
+
     return render(request, "students/give_feedback.html", {
         'queue': queue, 'feedback': feedback
     })
