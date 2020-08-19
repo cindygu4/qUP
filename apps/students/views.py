@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import JsonResponse, Http404
 from django.utils import timezone
 import time
+import json
 
 # Create your views here.
 def is_student(user):
@@ -49,7 +50,7 @@ def index(request):
             if student_got_help:
                 recently_attended.append(queue)
                 new_feedback = Feedback.objects.get_or_create(student=student, queue=queue)
-                feedback.append(new_feedback)
+                feedback.append(new_feedback[0])
 
     recently_attended = zip(recently_attended, feedback)
 
@@ -179,5 +180,37 @@ def give_feedback(request, queue_id):
         return redirect('students:index')
 
     return render(request, "students/give_feedback.html", {
-        'queue': queue, 'feedback': feedback
+        'queue': queue, 'feedback': feedback[0]
     })
+
+'''API for submitting a feedback form'''
+@login_required
+@user_passes_test(is_student)
+def submit_feedback(request, feedback_id):
+    # cannot get the feedback object, just post
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    try:
+        feedback = Feedback.objects.get(pk=feedback_id)
+    except Feedback.DoesNotExist:
+        return JsonResponse({"error": "Feedback entry not found."}, status=404)
+
+    try:
+        data = json.loads(request.body)
+    except ValueError:
+        queue = Queue.objects.get(pk=feedback.queue.id)
+        return redirect('students:give_feedback', queue.id)
+
+    rating = data.get("rating", "")
+    if rating == 0:
+        queue = Queue.objects.get(pk=feedback.queue.id)
+        return redirect('students:give_feedback', queue.id)
+
+    comments = data.get("comments", "")
+
+    Feedback.objects.filter(pk=feedback_id).update(rating=rating)
+    Feedback.objects.filter(pk=feedback_id).update(comments=comments)
+    Feedback.objects.filter(pk=feedback_id).update(completed=True)
+
+    return JsonResponse({"message": "Feedback submitted successfully."}, status=201)

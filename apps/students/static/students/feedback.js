@@ -94,4 +94,31 @@ function clicked_five() {
 
 function submit_feedback(target) {
     console.log(`Submitting feedback for ${target.id}`);
+    // get the csrf token
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    // make sure to include csrf token when fetching
+    const request = new Request(
+        `/student/feedback/${target.id}/submit/`,
+        {headers: {'X-CSRFToken': csrftoken}}
+    );
+
+    const commentsInput = document.querySelector(`#comments-form-input`);
+
+    if ((num_stars > 0) && commentsInput.value.trim() !== '') {
+        console.log('Submitting feedback');
+        fetch(request, {
+            method: 'POST',
+            body: JSON.stringify({
+                rating: num_stars,
+                comments: commentsInput.value
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+        });
+    } else {
+        console.log('Sorry. Try again.');
+    }
 }

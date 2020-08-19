@@ -15,5 +15,6 @@ urlpatterns = [
     path('queues/<int:queue_id>/give_feedback/', views.give_feedback, name='give_feedback'),
 
     # API stuff
-    path('notifications/', views.notifications, name='notifications_api')
+    path('notifications/', views.notifications, name='notifications_api'),
+    path('feedback/<int:feedback_id>/submit/', views.submit_feedback, name='submit_feedback')
 ]
