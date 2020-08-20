@@ -4,7 +4,7 @@ from .forms import JoinClassForm, JoinQueueForm
 from apps.teachers.models import Classroom, Queue
 from .models import Notification, Feedback, OfficeHoursLine
 from apps.teachers.views import update_queue
-from apps.users.models import Teacher, Student
+from apps.users.models import Student
 from django.contrib import messages
 from django.http import JsonResponse, Http404
 from django.utils import timezone

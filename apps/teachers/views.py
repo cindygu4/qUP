@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Classroom, Queue
-from apps.users.models import Teacher
 from apps.students.models import Notification, Feedback, OfficeHoursLine
 from django.http import Http404
 from .forms import NewClassroomForm, NewQueueForm
@@ -11,8 +10,6 @@ from django.http import JsonResponse
 from django.utils import timezone
 import json
 from django.db.models import Avg
-import pytz
-from datetime import date
 
 # Create your views here.
 def is_teacher(user):
