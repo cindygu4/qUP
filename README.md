@@ -66,10 +66,11 @@ The students app contains all the files needed for the student side.
   * Contains the student dashboard
   * When there are ongoing office hours, they will show up on the left hand side of the screen (if on a large/medium 
   screen)
-  * When office hours have been ended and the student attended that office hours, those office hours will show up in the 
+  * When office hours are done and the student attended that office hours, those office hours will show up in the 
   list on the right (for medium/larger screens)
     * If the student received help from the instructor during those office hours, a give feedback button will show up, 
-    allowing students to be redirected to a form that they can fill out 
+    allowing students to be redirected to a form that they can fill out
+    * Only shows the office hours attended in the past 7 days 
 * `join_class.html`
   * Allows students to input a 7-character code given to them by their instructor and join that class
 * `layout.html`
@@ -103,4 +104,64 @@ The teachers app contains all the files needed for the teacher side
 
 #### Static Folder
 * `classes.js`
+  * Allows instructors to edit the names of their classes without having to reload the page
 * `styles.css`
+  * Contains all of the CSS styling needed for the buttons, navbar color, body color, etc.
+  
+#### Templates Folder
+* `add_class.html`
+  * Allows instructor to create a new class
+* `add_queue.html`
+  * Allows instructor to fill out a form to create new office hours
+* `classes.html`
+  * Allows instructor to view all of their classes
+  * Shows their classes' class codes
+  * Allows them to edit the names of the classes without reloading the page (`classes.js`) 
+* `classroom.html`
+  * Allows instructor to view all of their office hours
+  * Instructors can create new office hours, open/join an office hours, view feedback from past office hours, and delete
+  office hours from this page
+* `edit_queue.html`
+  * Allows instructor to edit their office hours, fills the form with the existing office hours' information
+* `feedback.html`
+  * Instructors can view their avg rating for an office hours and all of the comments that students have made regarding 
+  their help during office hours
+  * Instructors can also see the number of students who responded
+  * All feedback ratings and comments are anonymous
+* `index.html`
+  * Contains the instructor dashboard
+  * When there are ongoing office hours, they will show up on the left hand side of the screen (if on a large/medium 
+  screen)
+  * When office hours have ended, those office hours will show up in the list on the right (for medium/larger screens), 
+  with buttons allowing instructors to view feedback for those office hours
+    * Only shows the office hours from the past 7 days
+* `layout.html`
+  * Contains the instructor navbar and any additional layout needed for other pages
+* `opened_oh.html`
+  * Contains the page that an instructor sees when a queue is opened
+  * Shows how many students in the queue
+  * Only shows the "Finished Helping" button for the first student in the queue
+  * Allows instructors to end office hours early with a button
+* `upcoming_ohs.html`
+  * Shows the instructor all of their upcoming office hours
+
+#### Python Files
+* `forms.py`
+  * Contains the forms needed for instructors to create classes and office hours
+  * Includes date validation function used when creating office hours 
+* `models.py`
+  * Contains the `Classroom` and `Queue` models
+* `urls.py`
+  * Contains all of the URLs need for an instructor to navigate around the web app
+* `views.py`
+  * Handles all of the instructor's requests
+  * Includes API for renaming a class
+
+Requirements
+---
+* `psycopg2-binary`
+* `django-crispy-forms`
+
+Additional Info
+---
+* Time Zone for this project is `America/New_York`
